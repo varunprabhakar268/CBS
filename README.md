@@ -1,25 +1,33 @@
-MGNREGA
+AIMS
 ====
 
 Introduction
 ----
-This is a console application for MGNREGA. To know more about MGNREGA, click on the link below.
-https://docs.google.com/document/d/1SMGuFuOq1y0xpnCZDOJv6Z0wdPvABDGKYpsZB0u3oAs/edit?usp=sharing
+This is a console application for AIMS. To know more about MGNREGA, click on the link below.
+https://docs.google.com/document/d/1uYiBGuXl1rxp36zle6d2NupgONPciq7UcSFTuvQuhHo/edit
 
 ### Credentials
-SuperUser Password(To register BDO.) : "BATMAN"
 
-Bdo Credentials 
-1. Email: varun@gmail.com
+Admin Credentials 
+1. Email: captain@gmail.com
    Password: "password"
 
-Gpm Credentials
+Supervisors Credentials
+1. Email: mortal@gmail.com
+   Password: "passmortal"
+2. Email: regaltos@gmail.com
+   Password: "passrega"
+3. Email: clutchgod@gmail.com 
+4. Email: zgod@gmail.com
+   Password: "passzgod"
+
+
+
+Worker Credentials
 1. Email: rob@gmail.com
    Password: "passrob"
-
-Member Credentials
-1. Email: rahul@gmail.com
-   Password: "passrahul"
-
-###Important
-Please change the absolute path of the db file in Main->CreateConnection() before running the application.
+2. Email: tony@gmail.com
+   Password: "passtony"
+3. Email: viper@gmail.com
+   Password: "passviper"
+  
