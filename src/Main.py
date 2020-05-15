@@ -26,7 +26,7 @@ if __name__ == '__main__':
     num = 0
     conn = create_connection()
 
-    while ch != 4:
+    while ch != '4':
 
         print("MAIN MENU")
         print("1. Admin Login")
@@ -51,6 +51,5 @@ if __name__ == '__main__':
 
         elif ch == '4':
             print("Thank You.")
-            break
         else:
             print("Invalid choice")

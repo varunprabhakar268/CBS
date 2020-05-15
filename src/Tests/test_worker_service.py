@@ -4,48 +4,6 @@ from src import WorkerService
 
 class TestWorkerService:
 
-    # @mock.patch('Main.create_connection')
-    # def test_update_project_member_attendance(self, mock_conn):
-    #     mock_conn.cursor().execute.return_value = True
-    #     mock_conn.commit.return_value = True
-    #     project_member_id = 1
-    #
-    #     result = WorkerService.update_project_member_attendance(mock_conn, project_member_id)
-    #
-    #     assert result == True
-    #
-    # @mock.patch('Main.create_connection')
-    # def test_update_project_member_wage(self, mock_conn):
-    #     project_member_id = 1
-    #     mock_conn.cursor().execute.return_value = True
-    #     mock_conn.commit.return_value = True
-    #
-    #     result = WorkerService.update_project_member_wage(mock_conn, project_member_id)
-    #
-    #     assert result == True
-    #
-    # @mock.patch('Main.create_connection')
-    # def test_show_member_details(self, mock_conn):
-    #     dummy_object = ['MemberName', 'email@gmail.com', 22, 'male', 'place', 'address', 1000]
-    #     member_id = 1
-    #     mock_conn.cursor().execute.return_value = True
-    #     mock_conn.cursor().fetchone.return_value = dummy_object
-    #
-    #     result = WorkerService.show_member_details(mock_conn, member_id)
-    #
-    #     assert result == dummy_object
-    #
-    # @mock.patch('Main.create_connection')
-    # def test_file_complaint(self, mock_conn):
-    #     mock_conn.cursor().execute.return_value = True
-    #     bdo_id = 1
-    #     gpm_id = 1
-    #     member_id = 1
-    #     issue = 'test issue'
-    #     result = WorkerService.file_complaint(mock_conn, bdo_id, gpm_id, member_id, issue)
-    #
-    #     assert result == True
-
     @mock.patch('src.WorkerService.getpass')
     @mock.patch('src.Main.create_connection')
     @mock.patch('src.WorkerService.input')
@@ -96,5 +54,101 @@ class TestWorkerService:
 
         assert result is False
 
+    @mock.patch('src.Main.create_connection')
+    def test_show_active_complaints(self, mock_conn):
+        mock_conn.return_value.cursor.return_value.fetchall.return_value = [(3, 'gas leakout', 'gas leakout comment', 3, 'WIP', 'entity', '2020-05-14 13:10:40')]
+        test_class = WorkerService.Worker()
 
+        result = test_class.show_active_complaints()
 
+        assert result is True
+
+    @mock.patch('src.Main.create_connection')
+    def test_show_active_complaints_empty(self, mock_conn):
+        mock_conn.return_value.cursor.return_value.fetchall.return_value = []
+        test_class = WorkerService.Worker()
+
+        result = test_class.show_active_complaints()
+
+        assert result is False
+
+    def test_show_active_complaints_unknown_error(self):
+        test_class = WorkerService.Worker()
+
+        result = test_class.show_active_complaints()
+
+        assert result is False
+
+    @mock.patch('src.Main.create_connection')
+    def test_show_complaint_history(self, mock_conn):
+        mock_conn.return_value.cursor.return_value.fetchall.return_value = [(3, 'gas leakout', 'gas leakout comment', 3, 'WIP', 'entity', '2020-05-14 13:10:40')]
+        test_class = WorkerService.Worker()
+
+        result = test_class.show_complaint_history()
+
+        assert result is True
+
+    @mock.patch('src.Main.create_connection')
+    def test_show_complaint_history_empty(self, mock_conn):
+        mock_conn.return_value.cursor.return_value.fetchall.return_value = []
+        test_class = WorkerService.Worker()
+
+        result = test_class.show_complaint_history()
+
+        assert result is False
+
+    def test_show_complaint_history_unknown_error(self):
+        test_class = WorkerService.Worker()
+
+        result = test_class.show_complaint_history()
+
+        assert result is False
+
+    @mock.patch('src.Main.create_connection')
+    def test_show_worker_profile(self, mock_conn):
+        mock_conn.return_value.cursor.return_value.fetchone.return_value = (1, 'test', 'test@gmail.com', 'test', 'none', '2020-05-14 13:07:30')
+        test_class = WorkerService.Worker()
+
+        result = test_class.show_worker_profile()
+
+        assert result is True
+
+    def test_show_worker_profile_unknown_error(self):
+        test_class = WorkerService.Worker()
+
+        result = test_class.show_worker_profile()
+
+        assert result is False
+
+    @mock.patch('src.Main.create_connection')
+    @mock.patch('src.WorkerService.input')
+    def test_create_complaint(self, input, mock_conn):
+        input.side_effect = ['accident', 'comment']
+        test_class = WorkerService.Worker()
+
+        result = test_class.create_complaint()
+
+        assert result is True
+
+    def test_create_complaint_failure(self):
+        test_class = WorkerService.Worker()
+
+        result = test_class.create_complaint()
+
+        assert result is False
+
+    @mock.patch('src.WorkerService.Worker.show_worker_profile')
+    @mock.patch('src.WorkerService.Worker.show_active_complaints')
+    @mock.patch('src.WorkerService.Worker.show_complaint_history')
+    @mock.patch('src.WorkerService.Worker.create_complaint')
+    @mock.patch('src.WorkerService.input')
+    def test_worker_tasks(self, input, mock_create_complaint,mock_show_complaint_history,mock_show_active_complaints,mock_show_worker_profile):
+        input.side_effect = ['1','2','3','4','6','5']
+        test_class = WorkerService.Worker()
+
+        test_class.worker_tasks()
+
+        mock_create_complaint.assert_called_once_with()
+        mock_show_complaint_history.assert_called_once_with()
+        mock_show_active_complaints.assert_called_once_with()
+        mock_show_worker_profile.assert_called_once_with()

@@ -38,31 +38,28 @@ class Worker:
             return False
 
     def worker_tasks(self):
-        try:
+        option = ''
+        while option != '5':
             print("\nMenu\n"
                   "1: Create Complaint\n"
                   "2: Show Complaint History\n"
                   "3: Show Active Complaints\n"
                   "4: Show Profile\n"
                   "5: Exit\n")
-            option = int(input("Select option: "))
+            option = input("Select Your Option ")
 
-            if option == 1:
+            if option == '1':
                 Worker.create_complaint(self)
-            elif option == 2:
+            elif option == '2':
                 Worker.show_complaint_history(self)
-            elif option == 3:
+            elif option == '3':
                 Worker.show_active_complaints(self)
-            elif option == 4:
+            elif option == '4':
                 Worker.show_worker_profile(self)
-            elif option == 5:
+            elif option == '5':
                 print("Thank You")
-                exit()
             else:
-                raise Exception
-        except Exception as e:
-            print("Invalid Choice. Please select again!")
-            Worker.worker_tasks(self)
+                print("Invalid choice")
 
     def create_complaint(self):
         try:
@@ -80,59 +77,66 @@ class Worker:
         except Exception as e:
             print("Error is", e)
             return False
-        finally:
-            Worker.worker_tasks(self)
 
     def show_complaint_history(self):
         try:
             sql = "select * from Complaints where worker_id = {}".format(self.worker_id)
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-            for i in result:
-                print("id : {}".format(i[0]))
-                print("Accident_name : {}".format(i[1]))
-                print("Comments : {}".format(i[2]))
-                print("Status : {}".format(i[4]))
-                print("----------------------------")
-
+                cur.execute(sql)
+                result = cur.fetchall()
+            print(result)
+            if result:
+                for i in result:
+                    print("id : {}".format(i[0]))
+                    print("Accident_name : {}".format(i[1]))
+                    print("Comments : {}".format(i[2]))
+                    print("Status : {}".format(i[4]))
+                    print("----------------------------")
+                return True
+            else:
+                print("Record not found")
+                return False
 
         except Exception as e:
             print("Error in reading data")
-        finally:
-            Worker.worker_tasks(self)
+            return False
 
     def show_active_complaints(self):
         try:
             sql = "select * from Complaints where worker_id = {} and status = 'WIP'".format(self.worker_id)
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-            for i in result:
-                print("Complaint_id : {}".format(i[0]))
-                print("Accident_name : {}".format(i[1]))
-                print("Comments : {}".format(i[2]))
-                print("Status : {}".format(i[4]))
-                print("----------------------------")
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Complaint_id : {}".format(i[0]))
+                    print("Accident_name : {}".format(i[1]))
+                    print("Comments : {}".format(i[2]))
+                    print("Status : {}".format(i[4]))
+                    print("----------------------------")
+                    return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
             print("Error in reading data")
-        finally:
-            Worker.worker_tasks(self)
+            return False
 
     def show_worker_profile(self):
         try:
             sql = "select * from Employees where id = {}".format(self.worker_id)
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-            for i in result:
-                print("Employee_id : {}".format(i[0]))
-                print("Name : {}".format(i[1]))
-                print("Email : {}".format(i[2]))
-                print("Role : {}".format(i[4]))
-                print("----------------------------")
+                cur.execute(sql)
+                result = cur.fetchone()
+            print("Employee_id : {}".format(result[0]))
+            print("Name : {}".format(result[1]))
+            print("Email : {}".format(result[2]))
+            print("Role : {}".format(result[4]))
+            return True
         except Exception as e:
             print("Error in reading data")
-        finally:
-            Worker.worker_tasks(self)
+            return False
