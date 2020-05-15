@@ -3,7 +3,7 @@ AIMS
 
 Introduction
 ----
-This is a console application for AIMS. To know more about MGNREGA, click on the link below.
+This is a console application for AIMS. To know more about AIMS, click on the link below.
 https://docs.google.com/document/d/1uYiBGuXl1rxp36zle6d2NupgONPciq7UcSFTuvQuhHo/edit
 
 ### Credentials
