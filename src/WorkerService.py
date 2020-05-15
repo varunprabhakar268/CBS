@@ -57,13 +57,13 @@ class Worker:
             option = input("Select Your Option ")
 
             if option == '1':
-                Worker.create_complaint(self)
+                self.create_complaint()
             elif option == '2':
-                Worker.show_complaint_history(self)
+                self.show_complaint_history()
             elif option == '3':
-                Worker.show_active_complaints(self)
+                self.show_active_complaints()
             elif option == '4':
-                Worker.show_worker_profile(self)
+                self.show_worker_profile()
             elif option == '5':
                 print("Thank You")
             else:

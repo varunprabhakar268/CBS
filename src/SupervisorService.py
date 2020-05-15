@@ -48,30 +48,25 @@ class Supervisor:
         show supervisor tasks.
         :return:
         """
-        try:
+        option = ''
+        while option != '4':
             print("\nMenu\n"
                   "1: Show Complaint\n"
                   "2: Create Report\n"
                   "3: Show Reports\n"
                   "4: Exit\n")
-            option = int(input("Select option: "))
+            option = input("Select option: ")
 
-            if option == 1:
-                Supervisor.show_complaint(self)
-                Supervisor.supervisor_tasks(self)
-            elif option == 2:
-                Supervisor.create_report(self)
-            elif option == 3:
-                Supervisor.show_reports(self)
-            elif option == 4:
+            if option == '1':
+                self.show_complaint()
+            elif option == '2':
+                self.create_report()
+            elif option == '3':
+                self.show_reports()
+            elif option == '4':
                 print("Thank You")
-                exit()
             else:
-                raise Exception
-
-        except Exception as e:
-            print("Invalid Choice. Please select again!")
-            Supervisor.supervisor_tasks(self)
+                print("Invalid choice.")
 
     def show_complaint(self):
         """
@@ -83,15 +78,21 @@ class Supervisor:
                 self.TeamName)
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-            for i in result:
-                print("Complaint_id : {}".format(i[0]))
-                print("Accident Name : {}".format(i[1]))
-                print("Comments : {}".format(i[2]))
-                print("----------------------------")
-
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Complaint_id : {}".format(i[0]))
+                    print("Accident Name : {}".format(i[1]))
+                    print("Comments : {}".format(i[2]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
         except Exception as e:
-            print("Error in reading data")
+            print("Some Error occurred.")
+            return False
 
     def create_report(self):
         """
@@ -99,7 +100,7 @@ class Supervisor:
         :return:
         """
         try:
-            Supervisor.show_complaint(self)
+            self.show_complaint()
             complaint_no = int(input("Enter Complaint id: "))
             root_cause = input("Enter root cause: ")
             details = input("Enter details: ")
@@ -114,10 +115,10 @@ class Supervisor:
                 cur.execute(sql)
                 self.conn.commit()
             print("Report submitted successfully!")
+            return True
         except Exception as e:
-            print("Error is", e)
-        finally:
-            Supervisor.supervisor_tasks(self)
+            print("Some Error occurred.")
+            return False
 
     def show_reports(self):
         """
@@ -130,16 +131,20 @@ class Supervisor:
                 cur = self.conn.cursor()
                 cur.execute(sql)
                 result = cur.fetchall()
-            for i in result:
-                print("Report Id : {}".format(i[0]))
-                print("Root Cause : {}".format(i[3]))
-                print("Details : {}".format(i[4]))
-                print("Affected Count : {}".format(i[5]))
-                print("Casualty Count : {}".format(i[6]))
-                print("Status : {}".format(i[7]))
-                print("----------------------------")
+            if result:
+                for i in result:
+                    print("Report Id : {}".format(i[0]))
+                    print("Root Cause : {}".format(i[3]))
+                    print("Details : {}".format(i[4]))
+                    print("Affected Count : {}".format(i[5]))
+                    print("Casualty Count : {}".format(i[6]))
+                    print("Status : {}".format(i[7]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
-        finally:
-            Supervisor.supervisor_tasks(self)
+            print("Some Error occurred.")
+            return False

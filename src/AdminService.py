@@ -41,40 +41,36 @@ class Admin:
         show Admin Tasks.
         :return:
         """
-        try:
+        option = ''
+        while option != '5':
             print("\nMenu\n"
                   "1: Worker Management\n"
                   "2: Supervisor Management\n"
                   "3: Show Complaints\n"
                   "4: Report Management\n"
                   "5: Exit\n")
-            option = int(input("Select option: "))
+            option = input("Select option: ")
 
-            if option == 1:
-                Admin.admin_worker_mgmnt(self)
-            elif option == 2:
-                Admin.admin_supervisor_mgmnt(self)
-            elif option == 3:
-                Admin.show_complaints(self)
-                Admin.admin_tasks(self)
-            elif option == 4:
-                Admin.admin_report_management(self)
-            elif option == 5:
+            if option == '1':
+                self.admin_worker_mgmnt()
+            elif option == '2':
+                self.admin_supervisor_mgmnt()
+            elif option == '3':
+                self.show_complaints()
+            elif option == '4':
+                self.admin_report_management()
+            elif option == '5':
                 print("Thank You")
-                exit()
             else:
-                raise Exception
-
-        except Exception as e:
-            print("Invalid Choice. Please select again!")
-            Admin.admin_tasks(self)
+                print("Invalid choice")
 
     def admin_worker_mgmnt(self):
         """
         worker management.
         :return:
         """
-        try:
+        option = ''
+        while option != '6':
             print("\nMenu\n"
                   "1: Create Worker Profile\n"
                   "2: Show All Workers\n"
@@ -82,33 +78,29 @@ class Admin:
                   "4: Delete Worker Profile\n"
                   "5: Assign Job Role\n"
                   "6: Go back\n")
-            option = int(input("Select option: "))
-            if option == 1:
-                Admin.create_worker(self)
-            elif option == 2:
-                Admin.show_allworkers(self)
-                Admin.admin_worker_mgmnt(self)
-            elif option == 3:
-                Admin.update_worker(self)
-            elif option == 4:
-                Admin.delete_worker(self)
-            elif option == 5:
-                Admin.assign_jobrole(self)
-            elif option == 6:
-                Admin.admin_tasks(self)
+            option = input("Select option: ")
+            if option == '1':
+                self.create_worker()
+            elif option == '2':
+                self.show_allworkers()
+            elif option == '3':
+                self.update_worker()
+            elif option == '4':
+                self.delete_worker()
+            elif option == '5':
+                self.assign_jobrole()
+            elif option == '6':
+                print("")
             else:
-                raise Exception
-
-        except Exception as e:
-            print("Invalid Choice. Please select again!")
-            Admin.admin_worker_mgmnt(self)
+                print("Invalid choice")
 
     def admin_supervisor_mgmnt(self):
         """
         supervisor management.
         :return:
         """
-        try:
+        option = ''
+        while option != '7':
             print("\nMenu\n"
                   "1: Create Supervisor Team\n"
                   "2: Update Supervisor Profile\n"
@@ -117,57 +109,50 @@ class Admin:
                   "5: Assign \n"
                   "6: Show All Supervisors \n"
                   "7: Back \n")
-            option = int(input("Select task: "))
-            if option == 1:
-                Admin.create_supervisorTeam(self)
-            elif option == 2:
-                Admin.update_supervisor(self)
-            elif option == 3:
-                Admin.delete_supervisor(self)
-            elif option == 4:
-                Admin.delete_supervisor_team(self)
-            elif option == 5:
-                Admin.assign_supervisor(self)
-            elif option == 6:
-                Admin.show_allsupervisors(self)
-                Admin.admin_supervisor_mgmnt(self)
-            elif option == 7:
-                Admin.admin_tasks(self)
+            option = input("Select task: ")
+            if option == '1':
+                self.create_supervisorTeam()
+            elif option == '2':
+                self.update_supervisor()
+            elif option == '3':
+                self.delete_supervisor()
+            elif option == '4':
+                self.delete_supervisor_team()
+            elif option == '5':
+                self.assign_supervisor()
+            elif option == '6':
+                self.show_allsupervisors()
+            elif option == '7':
+                print("")
             else:
-                raise Exception
-
-        except Exception as e:
-            print("Invalid Choice. Please select again!")
-            Admin.admin_supervisor_mgmnt(self)
+                print("Invalid choice.")
 
     def admin_report_management(self):
         """
         report management.
         :return:
         """
-        try:
+        option = ''
+        while option != '5':
             print("\nMenu\n"
                   "1: Show Report History\n"
                   "2: Show Approved Reports\n"
                   "3: Show Rejected Reports\n"
                   "4: Approve Pending Reports\n"
                   "5: Go back\n")
-            option = int(input("Select task: "))
-            if option == 1:
-                Admin.show_all_reports(self)
-            elif option == 2:
-                Admin.show_approved_reports(self)
-            elif option == 3:
-                Admin.show_rejected_reports(self)
-            elif option == 4:
-                Admin.show_pending_reports(self)
-            elif option == 5:
-                Admin.admin_tasks(self)
+            option = input("Select task: ")
+            if option == '1':
+                self.show_all_reports()
+            elif option == '2':
+                self.show_approved_reports()
+            elif option == '3':
+                self.show_rejected_reports()
+            elif option == '4':
+                self.show_pending_reports()
+            elif option == '5':
+                print("")
             else:
-                raise Exception
-        except Exception as e:
-            print("Invalid Choice. Please select again!")
-            Admin.admin_report_management(self)
+                print("Invalid choice.")
 
     def create_worker(self):
         """
@@ -175,7 +160,6 @@ class Admin:
         :return:
         """
         try:
-
             name = input("Enter name: ")
             if not name.isalpha():
                 print("Invalid data format. Name should contain only alphabets. ")
@@ -192,11 +176,11 @@ class Admin:
                 cur = self.conn.cursor()
                 cur.execute(sql)
                 print("Worker created successfully!")
+            return True
 
         except Exception as e:
-            print("Error", e)
-        finally:
-            Admin.admin_worker_mgmnt(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def get_worker_by_id(self, worker_id):
         """
@@ -250,15 +234,13 @@ class Admin:
 
                 print("Record Updated Successfully")
             record = self.get_worker_by_id(worker_id)
-
+            return True
         except ValueError:
             print("Invalid input. Please try again.")
             return False
         except:
             print("Some Error occured. Please try again.")
             return False
-        finally:
-            Admin.admin_worker_mgmnt(self)
 
     def delete_worker(self):
         """
@@ -266,19 +248,22 @@ class Admin:
         :return:
         """
         try:
-            Admin.show_allworkers(self)
+            self.show_allworkers()
             worker_id = int(input("Enter the Worker id: "))
-            sql = 'DELETE FROM Employees WHERE id={}'.format(worker_id)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                print("Worker deleted successfully")
-
+            result = self.get_worker_by_id(worker_id)
+            if result:
+                sql = 'DELETE FROM Employees WHERE id={}'.format(worker_id)
+                with self.conn:
+                    cur = self.conn.cursor()
+                    cur.execute(sql)
+                    print("Worker deleted successfully")
+                return True
+            else:
+                print("Invalid worker Id.")
+                return False
         except Exception as e:
-            print("error", e)
-
-        finally:
-            Admin.admin_worker_mgmnt(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def assign_jobrole(self):
         """
@@ -286,8 +271,7 @@ class Admin:
         :return:
         """
         try:
-
-            Admin.show_unassigned_workers(self)
+            self.show_unassigned_workers()
             worker_id = int(input("Enter the worker id: "))
             role = input("Enter role: ")
             sql = 'UPDATE Employees SET role = "{}" WHERE id = {}'.format(role,worker_id)
@@ -296,12 +280,10 @@ class Admin:
                 cur.execute(sql)
                 self.conn.commit()
                 print("Job role assigned")
-
+            return True
         except Exception as e:
-            print('error', e)
-
-        finally:
-            Admin.admin_worker_mgmnt(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_allworkers(self):
         """
@@ -312,16 +294,23 @@ class Admin:
             sql = "select * from Employees"
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-            for i in result:
-                print("Worker Id : {}".format(i[0]))
-                print("Name : {}".format(i[1]))
-                print("Email : {}".format(i[2]))
-                print("Role : {}".format(i[4]))
-                print("----------------------------")
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Worker Id : {}".format(i[0]))
+                    print("Name : {}".format(i[1]))
+                    print("Email : {}".format(i[2]))
+                    print("Role : {}".format(i[4]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_unassigned_workers(self):
         """
@@ -332,16 +321,23 @@ class Admin:
             sql = "Select * from Employees where role = 'none' "
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-            for i in result:
-                print("Worker Id : {}".format(i[0]))
-                print("Name : {}".format(i[1]))
-                print("Email : {}".format(i[2]))
-                print("Role : {}".format(i[4]))
-                print("----------------------------")
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Worker Id : {}".format(i[0]))
+                    print("Name : {}".format(i[1]))
+                    print("Email : {}".format(i[2]))
+                    print("Role : {}".format(i[4]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
+            print("Some Error occurred.Please try again")
+            return False
 
     def create_supervisorTeam(self):
         """
@@ -368,11 +364,11 @@ class Admin:
                     cur.execute(sql)
                 print("Supervisor created successfully!\n")
             print("Team created successfully!")
+            return True
 
         except Exception as e:
-            print("Error is", e)
-        finally:
-            Admin.admin_supervisor_mgmnt(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def get_supervisor_by_id(self, supervisor_id):
 
@@ -423,9 +419,12 @@ class Admin:
                     cur = self.conn.cursor()
                     cur.execute(sql)
                     self.conn.commit()
-
-                print("Record Updated Successfully")
+                    print("Record Updated Successfully")
+            else:
+                print("Record not found.")
+                return False
             record = self.get_supervisor_by_id(supervisor_id)
+            return True
 
         except ValueError:
             print("Invalid input. Please try again.")
@@ -433,8 +432,6 @@ class Admin:
         except:
             print("Some Error occured. Please try again.")
             return False
-        finally:
-            Admin.admin_supervisor_mgmnt(self)
 
     def delete_supervisor(self):
         """
@@ -442,18 +439,73 @@ class Admin:
         :return:
         """
         try:
-            Admin.show_allsupervisors(self)
+            self.show_allsupervisors()
             supervisor_id = int(input("Enter supervisor id: "))
-            sql = 'DELETE FROM Supervisors WHERE id={}'.format(supervisor_id)
+            result = self.get_supervisor_by_id(supervisor_id)
+            if result:
+                sql = 'DELETE FROM Supervisors WHERE id={}'.format(supervisor_id)
+                with self.conn:
+                    cur = self.conn.cursor()
+                    cur.execute(sql)
+                    self.conn.commit()
+                print("Supervisor deleted successfully")
+                return True
+            else:
+                print("Invalid Supervisor Id.")
+
+        except Exception as e:
+            print("Some Error occurred.Please try again")
+            return False
+
+    def show_team_members(self,team_name):
+        """
+        show details of all supervisors.
+        :return:
+        """
+        try:
+            sql = "select * from Supervisors where TeamName = '{}'".format(team_name)
             with self.conn:
                 cur = self.conn.cursor()
                 cur.execute(sql)
-                self.conn.commit()
-            print("Supervisor deleted successfully")
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Supervisor id : {}".format(i[0]))
+                    print("Name : {}".format(i[1]))
+                    print("Email : {}".format(i[2]))
+                    print("Assigned : {}".format(i[4]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
+
         except Exception as e:
-            print("error", e)
-        finally:
-            Admin.admin_supervisor_mgmnt(self)
+            print("Some Error occurred.Please try again")
+            return False
+
+    def show_all_teams(self):
+        """
+        show details of all supervisors.
+        :return:
+        """
+        try:
+            sql = "select Distinct TeamName from Supervisors"
+            with self.conn:
+                cur = self.conn.cursor()
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print(i[0])
+                return True
+            else:
+                print("No records found.")
+                return False
+
+        except Exception as e:
+            print("Some Error occurred.Please try again")
+            return False
 
     def delete_supervisor_team(self):
         """
@@ -461,19 +513,23 @@ class Admin:
         :return:
         """
         try:
-            Admin.show_allsupervisors(self)
+            print("Teams:")
+            self.show_all_teams()
             team_name = input("Enter Team Name: ")
-            sql = 'DELETE FROM Supervisors WHERE TeamName="{}"'.format(team_name)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                self.conn.commit()
-            print("Supervision Team deleted successfully")
+            result = self.show_team_members(team_name)
+            if result:
+                sql = 'DELETE FROM Supervisors WHERE TeamName="{}"'.format(team_name)
+                with self.conn:
+                    cur = self.conn.cursor()
+                    cur.execute(sql)
+                    self.conn.commit()
+                print("Supervision Team deleted successfully")
+                return True
+            else:
+                print("Invalid Team Name.")
         except Exception as e:
-            print("error", e)
-
-        finally:
-            Admin.admin_supervisor_mgmnt(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_allsupervisors(self):
         """
@@ -484,25 +540,31 @@ class Admin:
             sql = "select * from Supervisors order by TeamName"
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-
-            for i in result:
-                print("Supervisor id : {}".format(i[0]))
-                print("Name : {}".format(i[1]))
-                print("Email : {}".format(i[2]))
-                print("Assigned : {}".format(i[4]))
-                print("Team Name : {}".format(i[5]))
-                print("----------------------------")
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Supervisor id : {}".format(i[0]))
+                    print("Name : {}".format(i[1]))
+                    print("Email : {}".format(i[2]))
+                    print("Assigned : {}".format(i[4]))
+                    print("Team Name : {}".format(i[5]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
+            print("Some Error occurred.Please try again")
+            return False
 
     def assign_supervisor(self):
         """assign a supervision team to investigate the complaint"""
         try:
-            Admin.show_complaints(self)
+            self.show_complaints()
             c_id = int(input("Enter Complaint id: "))
-            Admin.show_unassigned_supervisors(self)
+            self.show_unassigned_supervisors()
             team_name = input("Enter name of the team you want to assign: ")
 
             sql = 'UPDATE Supervisors Set assigned = "yes" WHERE TeamName = "{}"'.format(team_name)
@@ -516,12 +578,11 @@ class Admin:
                 cur.execute(sql1)
                 self.conn.commit()
             print("Assigned Successfully!")
+            return True
 
         except Exception as e:
-            print('error', e)
-
-        finally:
-            Admin.admin_supervisor_mgmnt(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_unassigned_supervisors(self):
         """
@@ -532,14 +593,20 @@ class Admin:
             sql = "Select TeamName from Supervisors where assigned = 'no' group by TeamName"
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-
-            for i in result:
-                print("\n Unassigned Teams: ")
-                print("Team : {}\n".format(i[0]))
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("\n Unassigned Teams: ")
+                    print("Team : {}\n".format(i[0]))
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
+            print("Some Error occurred.Please try again")
+            return False
 
     # SHOW COMPLAINTS
     def show_complaints(self):
@@ -551,18 +618,22 @@ class Admin:
             sql = "Select * from Complaints where status = 'open' "
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-
-            for i in result:
-                print("Complaint_id : {}".format(i[0]))
-                print("Accident : {}".format(i[1]))
-                print("Comments : {}".format(i[2]))
-                print("----------------------------")
-
-
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Complaint_id : {}".format(i[0]))
+                    print("Accident : {}".format(i[1]))
+                    print("Comments : {}".format(i[2]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_all_reports(self):
         """
@@ -573,25 +644,30 @@ class Admin:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,r.status,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id"
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-            for i in result:
-                print("Report Id : {}".format(i[0]))
-                print("Complaint Id : {}".format(i[1]))
-                print("Team Number : {}".format(i[2]))
-                print("Root Cause : {}".format(i[3]))
-                print("Details : {}".format(i[4]))
-                print("Number of people affected : {}".format(i[5]))
-                print("Number of Casualties : {}".format(i[6]))
-                print("Status : {}".format(i[7]))
-                print("Accident Name : {}".format(i[8]))
-                print("Comments : {}".format(i[9]))
-                print("----------------------------")
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Report Id : {}".format(i[0]))
+                    print("Complaint Id : {}".format(i[1]))
+                    print("Team Number : {}".format(i[2]))
+                    print("Root Cause : {}".format(i[3]))
+                    print("Details : {}".format(i[4]))
+                    print("Number of people affected : {}".format(i[5]))
+                    print("Number of Casualties : {}".format(i[6]))
+                    print("Status : {}".format(i[7]))
+                    print("Accident Name : {}".format(i[8]))
+                    print("Comments : {}".format(i[9]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
 
         except Exception as e:
-            print("Error in reading data")
-        finally:
-            Admin.admin_report_management(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_approved_reports(self):
         """
@@ -602,24 +678,28 @@ class Admin:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id where r.status = 'approved'"
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-
-            for i in result:
-                print("Report Id : {}".format(i[0]))
-                print("Complaint Id : {}".format(i[1]))
-                print("Team Number : {}".format(i[2]))
-                print("Root Cause : {}".format(i[3]))
-                print("Details : {}".format(i[4]))
-                print("Number of people affected : {}".format(i[5]))
-                print("Number of Casualties : {}".format(i[6]))
-                print("Accident Name : {}".format(i[7]))
-                print("Comments : {}".format(i[8]))
-                print("----------------------------")
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Report Id : {}".format(i[0]))
+                    print("Complaint Id : {}".format(i[1]))
+                    print("Team Number : {}".format(i[2]))
+                    print("Root Cause : {}".format(i[3]))
+                    print("Details : {}".format(i[4]))
+                    print("Number of people affected : {}".format(i[5]))
+                    print("Number of Casualties : {}".format(i[6]))
+                    print("Accident Name : {}".format(i[7]))
+                    print("Comments : {}".format(i[8]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
-        finally:
-            Admin.admin_report_management(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_rejected_reports(self):
         """
@@ -630,25 +710,28 @@ class Admin:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id where r.status = 'rejected'"
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
-
-            for i in result:
-                print("Report Id : {}".format(i[0]))
-                print("Complaint Id : {}".format(i[1]))
-                print("Team Number : {}".format(i[2]))
-                print("Root Cause : {}".format(i[3]))
-                print("Details : {}".format(i[4]))
-                print("Number of people affected : {}".format(i[5]))
-                print("Number of Casualties : {}".format(i[6]))
-                print("Accident Name : {}".format(i[7]))
-                print("Comments : {}".format(i[8]))
-                print("----------------------------")
-
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Report Id : {}".format(i[0]))
+                    print("Complaint Id : {}".format(i[1]))
+                    print("Team Number : {}".format(i[2]))
+                    print("Root Cause : {}".format(i[3]))
+                    print("Details : {}".format(i[4]))
+                    print("Number of people affected : {}".format(i[5]))
+                    print("Number of Casualties : {}".format(i[6]))
+                    print("Accident Name : {}".format(i[7]))
+                    print("Comments : {}".format(i[8]))
+                    print("----------------------------")
+                return True
+            else:
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
-        finally:
-            Admin.admin_report_management(self)
+            print("Some Error occurred.Please try again")
+            return False
 
     def show_pending_reports(self):
         """
@@ -659,55 +742,59 @@ class Admin:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,r.status,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id where r.status = 'none'"
             with self.conn:
                 cur = self.conn.cursor()
-                result = cur.execute(sql)
+                cur.execute(sql)
+                result = cur.fetchall()
+            if result:
+                for i in result:
+                    print("Report Id : {}".format(i[0]))
+                    print("Complaint Id : {}".format(i[1]))
+                    print("Team Number : {}".format(i[2]))
+                    print("Root Cause : {}".format(i[3]))
+                    print("Details : {}".format(i[4]))
+                    print("Number of people affected : {}".format(i[5]))
+                    print("Number of Casualties : {}".format(i[6]))
+                    print("Accident Name : {}".format(i[7]))
+                    print("Comments : {}".format(i[8]))
+                    print("----------------------------")
 
-            for i in result:
-                print("Report Id : {}".format(i[0]))
-                print("Complaint Id : {}".format(i[1]))
-                print("Team Number : {}".format(i[2]))
-                print("Root Cause : {}".format(i[3]))
-                print("Details : {}".format(i[4]))
-                print("Number of people affected : {}".format(i[5]))
-                print("Number of Casualties : {}".format(i[6]))
-                print("Accident Name : {}".format(i[7]))
-                print("Comments : {}".format(i[8]))
-                print("----------------------------")
 
-            r_id = int(input("Enter Report Id: "))
-            val = input("Enter 'a' to Approve or 'r' to Reject or 'b' to go Back:   ")
-            if val is 'a':
-                sql = 'update Report set status = "approved" where id = {}'.format(r_id)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    self.conn.commit()
-                print("Report approved successfully!")
-                sql1 = 'select complaint_id from Report where id = {}'.format(r_id)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    res = cur.execute(sql1)
-                for i in res:
-                    Admin.c_id = i[0]
-                sql2 = 'update Complaints set status = "closed" where id = {}'.format(Admin.c_id)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql2)
-                    self.conn.commit()
-            elif val is 'r':
-                sql = 'update Report set status = "rejected" where id = {}'.format(r_id)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    self.conn.commit()
-                print("Report Rejected successfully!")
-            elif val is 'b':
-                Admin.admin_report_management(self)
+                r_id = int(input("Enter Report Id: "))
+                val = input("Enter 'a' to Approve or 'r' to Reject: ")
+                if val is 'a':
+                    sql = 'update Report set status = "approved" where id = {}'.format(r_id)
+                    with self.conn:
+                        cur = self.conn.cursor()
+                        cur.execute(sql)
+                        self.conn.commit()
+                    print("Report approved successfully!")
+                    sql1 = 'select complaint_id from Report where id = {}'.format(r_id)
+                    with self.conn:
+                        cur = self.conn.cursor()
+                        res = cur.execute(sql1)
+                    for i in res:
+                        Admin.c_id = i[0]
+                    sql2 = 'update Complaints set status = "closed" where id = {}'.format(Admin.c_id)
+                    with self.conn:
+                        cur = self.conn.cursor()
+                        cur.execute(sql2)
+                        self.conn.commit()
+                    return True
+                elif val is 'r':
+                    sql = 'update Report set status = "rejected" where id = {}'.format(r_id)
+                    with self.conn:
+                        cur = self.conn.cursor()
+                        cur.execute(sql)
+                        self.conn.commit()
+                    print("Report Rejected successfully!")
+                    return True
+                else:
+                    print("Invalid Choice. Please try again!")
+                    return False
             else:
-                print("Invalid Choice. Please try again!")
-                Admin.show_pending_reports(self)
+                print("No records found.")
+                return False
 
         except Exception as e:
-            print("Error in reading data")
-        finally:
-            Admin.admin_report_management(self)
+            print("Some Error occurred.Please try again")
+            return False
 
