@@ -12,6 +12,10 @@ class Admin:
         self.conn = Main.create_connection()
 
     def admin_login(self):
+        """
+        admin authentication
+        :return:
+        """
         email = input("Enter Email: ")
 
         sql = "SELECT email,password,id FROM Admin WHERE email = '{}'".format(email)
@@ -33,6 +37,10 @@ class Admin:
             return False
 
     def admin_tasks(self):
+        """
+        show Admin Tasks.
+        :return:
+        """
         try:
             print("\nMenu\n"
                   "1: Worker Management\n"
@@ -62,6 +70,10 @@ class Admin:
             Admin.admin_tasks(self)
 
     def admin_worker_mgmnt(self):
+        """
+        worker management.
+        :return:
+        """
         try:
             print("\nMenu\n"
                   "1: Create Worker Profile\n"
@@ -92,6 +104,10 @@ class Admin:
             Admin.admin_worker_mgmnt(self)
 
     def admin_supervisor_mgmnt(self):
+        """
+        supervisor management.
+        :return:
+        """
         try:
             print("\nMenu\n"
                   "1: Create Supervisor Team\n"
@@ -125,6 +141,10 @@ class Admin:
             Admin.admin_supervisor_mgmnt(self)
 
     def admin_report_management(self):
+        """
+        report management.
+        :return:
+        """
         try:
             print("\nMenu\n"
                   "1: Show Report History\n"
@@ -150,6 +170,10 @@ class Admin:
             Admin.admin_report_management(self)
 
     def create_worker(self):
+        """
+        create a new worker.
+        :return:
+        """
         try:
 
             name = input("Enter name: ")
@@ -176,11 +200,9 @@ class Admin:
 
     def get_worker_by_id(self, worker_id):
         """
-        Get details of a particular Gpm.
-        :param conn:
-        :param gpm_id:
-        :return: Gpm Details matching the Id
+        Get details of a particular worker.
         """
+
         sql = "SELECT name,email,role FROM Employees WHERE id = {}".format(worker_id)
         with self.conn:
             cur = self.conn.cursor()
@@ -196,6 +218,10 @@ class Admin:
             return False
 
     def update_worker(self):
+        """
+        update worker details.
+        :return:
+        """
         try:
             worker_id = int(input("Enter Worker Id "))
             record = self.get_worker_by_id(worker_id)
@@ -235,6 +261,10 @@ class Admin:
             Admin.admin_worker_mgmnt(self)
 
     def delete_worker(self):
+        """
+        delete worker.
+        :return:
+        """
         try:
             Admin.show_allworkers(self)
             worker_id = int(input("Enter the Worker id: "))
@@ -251,6 +281,10 @@ class Admin:
             Admin.admin_worker_mgmnt(self)
 
     def assign_jobrole(self):
+        """
+        assign role to worker.
+        :return:
+        """
         try:
 
             Admin.show_unassigned_workers(self)
@@ -270,6 +304,10 @@ class Admin:
             Admin.admin_worker_mgmnt(self)
 
     def show_allworkers(self):
+        """
+        show details of all workers.
+        :return:
+        """
         try:
             sql = "select * from Employees"
             with self.conn:
@@ -286,6 +324,10 @@ class Admin:
             print("Error in reading data")
 
     def show_unassigned_workers(self):
+        """
+        show details of unassigned workers.
+        :return:
+        """
         try:
             sql = "Select * from Employees where role = 'none' "
             with self.conn:
@@ -302,8 +344,11 @@ class Admin:
             print("Error in reading data")
 
     def create_supervisorTeam(self):
+        """
+        create new supervision team.
+        :return:
+        """
         try:
-
             num = int(input("Enter number of members: "))
             team_name = input("Enter Team Name: ")
             for i in range(num):
@@ -330,11 +375,9 @@ class Admin:
             Admin.admin_supervisor_mgmnt(self)
 
     def get_supervisor_by_id(self, supervisor_id):
+
         """
-        Get details of a particular Gpm.
-        :param conn:
-        :param gpm_id:
-        :return: Gpm Details matching the Id
+        Get details of a particular supervisor.
         """
         sql = "SELECT name,email,assigned,TeamName FROM Supervisors WHERE id = {}".format(supervisor_id)
         with self.conn:
@@ -353,6 +396,10 @@ class Admin:
             return False
 
     def update_supervisor(self):
+        """
+        update details of a particular supervisor.
+        :return:
+        """
         try:
             supervisor_id = int(input("Enter Supervisor Id "))
             record = self.get_supervisor_by_id(supervisor_id)
@@ -390,6 +437,10 @@ class Admin:
             Admin.admin_supervisor_mgmnt(self)
 
     def delete_supervisor(self):
+        """
+        delete supervisor.
+        :return:
+        """
         try:
             Admin.show_allsupervisors(self)
             supervisor_id = int(input("Enter supervisor id: "))
@@ -405,6 +456,10 @@ class Admin:
             Admin.admin_supervisor_mgmnt(self)
 
     def delete_supervisor_team(self):
+        """
+        delete entire supervision team.
+        :return:
+        """
         try:
             Admin.show_allsupervisors(self)
             team_name = input("Enter Team Name: ")
@@ -421,6 +476,10 @@ class Admin:
             Admin.admin_supervisor_mgmnt(self)
 
     def show_allsupervisors(self):
+        """
+        show details of all supervisors.
+        :return:
+        """
         try:
             sql = "select * from Supervisors order by TeamName"
             with self.conn:
@@ -439,6 +498,7 @@ class Admin:
             print("Error in reading data")
 
     def assign_supervisor(self):
+        """assign a supervision team to investigate the complaint"""
         try:
             Admin.show_complaints(self)
             c_id = int(input("Enter Complaint id: "))
@@ -464,6 +524,10 @@ class Admin:
             Admin.admin_supervisor_mgmnt(self)
 
     def show_unassigned_supervisors(self):
+        """
+        show supervision teams that've not been assigned to any complaints.
+        :return:
+        """
         try:
             sql = "Select TeamName from Supervisors where assigned = 'no' group by TeamName"
             with self.conn:
@@ -479,6 +543,10 @@ class Admin:
 
     # SHOW COMPLAINTS
     def show_complaints(self):
+        """
+        show complaint details.
+        :return:
+        """
         try:
             sql = "Select * from Complaints where status = 'open' "
             with self.conn:
@@ -497,6 +565,10 @@ class Admin:
             print("Error in reading data")
 
     def show_all_reports(self):
+        """
+        show details of all reports.
+        :return:
+        """
         try:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,r.status,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id"
             with self.conn:
@@ -522,6 +594,10 @@ class Admin:
             Admin.admin_report_management(self)
 
     def show_approved_reports(self):
+        """
+        show details of reports that've been approved.
+        :return:
+        """
         try:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id where r.status = 'approved'"
             with self.conn:
@@ -546,6 +622,10 @@ class Admin:
             Admin.admin_report_management(self)
 
     def show_rejected_reports(self):
+        """
+        show details of reports that've been rejected.
+        :return:
+        """
         try:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id where r.status = 'rejected'"
             with self.conn:
@@ -571,6 +651,10 @@ class Admin:
             Admin.admin_report_management(self)
 
     def show_pending_reports(self):
+        """
+        show details of reports that're pending approval and provide an option to approve/reject them.
+        :return:
+        """
         try:
             sql = "Select r.id,r.complaint_id,r.TeamName,r.root_cause,r.details,r.no_of_people_affected,r.no_of_casualties,r.status,c.accident_name,c.comments from Report r join Complaints c on r.complaint_id = c.id where r.status = 'none'"
             with self.conn:

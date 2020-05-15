@@ -1,6 +1,7 @@
 from getpass import getpass
 from src import Main
 
+
 class Supervisor:
 
     def __init__(self):
@@ -9,6 +10,10 @@ class Supervisor:
         self.conn = Main.create_connection()
 
     def supervisor_login(self):
+        """
+        supervisor authentication.
+        :return:
+        """
         email = input("Enter Email Id: ")
         sql = "SELECT email,password,id,TeamName FROM Supervisors WHERE email = '{}'".format(email)
         with self.conn:
@@ -39,6 +44,10 @@ class Supervisor:
             return False
 
     def supervisor_tasks(self):
+        """
+        show supervisor tasks.
+        :return:
+        """
         try:
             print("\nMenu\n"
                   "1: Show Complaint\n"
@@ -65,9 +74,13 @@ class Supervisor:
             Supervisor.supervisor_tasks(self)
 
     def show_complaint(self):
+        """
+        show complaint details.
+        :return:
+        """
         try:
-
-            sql = "select c.id,c.accident_name,c.comments from Complaints c where assigned_team = '{}'".format(self.TeamName)
+            sql = "select c.id,c.accident_name,c.comments from Complaints c where assigned_team = '{}'".format(
+                self.TeamName)
             with self.conn:
                 cur = self.conn.cursor()
                 result = cur.execute(sql)
@@ -80,8 +93,11 @@ class Supervisor:
         except Exception as e:
             print("Error in reading data")
 
-
     def create_report(self):
+        """
+        create new report.
+        :return:
+        """
         try:
             Supervisor.show_complaint(self)
             complaint_no = int(input("Enter Complaint id: "))
@@ -90,9 +106,9 @@ class Supervisor:
             affected = int(input("Enter the total number of people affected: "))
             casualties = int(input("Enter the total number casualties: "))
 
-
             sql = """INSERT INTO Report (complaint_id,TeamName,root_cause,details,no_of_people_affected,no_of_casualties)
-                                VALUES ({},'{}','{}','{}',{},{})""".format(complaint_no, self.TeamName, root_cause, details,affected,casualties)
+                                VALUES ({},'{}','{}','{}',{},{})""".format(complaint_no, self.TeamName, root_cause,
+                                                                           details, affected, casualties)
             with self.conn:
                 cur = self.conn.cursor()
                 cur.execute(sql)
@@ -104,6 +120,10 @@ class Supervisor:
             Supervisor.supervisor_tasks(self)
 
     def show_reports(self):
+        """
+        show report details.
+        :return:
+        """
         try:
             sql = "select * from Report where TeamName = '{}'".format(self.TeamName)
             with self.conn:
@@ -123,4 +143,3 @@ class Supervisor:
             print("Error in reading data")
         finally:
             Supervisor.supervisor_tasks(self)
-

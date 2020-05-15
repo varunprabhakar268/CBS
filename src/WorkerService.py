@@ -9,6 +9,10 @@ class Worker:
         self.conn = Main.create_connection()
 
     def worker_login(self):
+        """
+        worker authentication.
+        :return:
+        """
         email = input("Enter Email Id: ")
         sql = "SELECT email,password,id FROM Employees WHERE email = '{}'".format(email)
         with self.conn:
@@ -38,6 +42,10 @@ class Worker:
             return False
 
     def worker_tasks(self):
+        """
+        show worker tasks.
+        :return:
+        """
         option = ''
         while option != '5':
             print("\nMenu\n"
@@ -62,6 +70,10 @@ class Worker:
                 print("Invalid choice")
 
     def create_complaint(self):
+        """
+        create new complaint.
+        :return:
+        """
         try:
             accident_name = input("Enter details: ")
             comments = input("Enter comments: ")
@@ -79,6 +91,10 @@ class Worker:
             return False
 
     def show_complaint_history(self):
+        """
+        show complaint history.
+        :return:
+        """
         try:
             sql = "select * from Complaints where worker_id = {}".format(self.worker_id)
             with self.conn:
@@ -103,6 +119,10 @@ class Worker:
             return False
 
     def show_active_complaints(self):
+        """
+        show complaints with investigation status WIP.
+        :return:
+        """
         try:
             sql = "select * from Complaints where worker_id = {} and status = 'WIP'".format(self.worker_id)
             with self.conn:
@@ -126,6 +146,10 @@ class Worker:
             return False
 
     def show_worker_profile(self):
+        """
+        show profile details.
+        :return:
+        """
         try:
             sql = "select * from Employees where id = {}".format(self.worker_id)
             with self.conn:
