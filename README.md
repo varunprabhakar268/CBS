@@ -1,4 +1,4 @@
-AIMS
+Cab Booking System
 ====
 
 Introduction
