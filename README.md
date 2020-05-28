@@ -3,31 +3,19 @@ AIMS
 
 Introduction
 ----
-This is a console application for AIMS. To know more about AIMS, click on the link below.
-https://docs.google.com/document/d/1uYiBGuXl1rxp36zle6d2NupgONPciq7UcSFTuvQuhHo/edit
+This is a console application for Cab Booking System. To know more about Cab Booking System, click on the link below.
+https://docs.google.com/document/d/19TN5iCXihnF_19BxCLd2nhPaUsKxMlsDDbV0IbylRRo/edit#
 
 ### Credentials
 
 Admin Credentials 
-1. Email: captain@gmail.com
+1. Email: cap@gmail.com
    Password: "password"
 
-Supervisors Credentials
+Employee Credentials
 1. Email: mortal@gmail.com
-   Password: "passmortal"
-2. Email: regaltos@gmail.com
-   Password: "passrega"
-3. Email: clutchgod@gmail.com 
-4. Email: zgod@gmail.com
-   Password: "passzgod"
+   Password: "mortal"
+2. Email: viper@gmail.com
+   Password: "viper"
 
-
-
-Worker Credentials
-1. Email: rob@gmail.com
-   Password: "passrob"
-2. Email: tony@gmail.com
-   Password: "passtony"
-3. Email: viper@gmail.com
-   Password: "passviper"
   

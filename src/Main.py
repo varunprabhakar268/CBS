@@ -1,4 +1,4 @@
-from src import SupervisorService, WorkerService, schema,AdminService
+from src import EmployeeService, schema,AdminService
 import sqlite3
 from sqlite3 import Error
 
@@ -9,13 +9,13 @@ def create_connection():
         :param db_file: database file
         :return: Connection object or None
         """
-    db_file = "aims_db.sqlite"
+    db_file = "cbs_db.sqlite"
     try:
         conn = sqlite3.connect(db_file)
         schema.create_tables(conn)
-        # sql = "PRAGMA foreign_keys = ON"
-        # cur = conn.cursor()
-        # cur.execute(sql)
+        sql = "PRAGMA foreign_keys = ON"
+        cur = conn.cursor()
+        cur.execute(sql)
         return conn
     except Error as e:
         print(e)
@@ -26,13 +26,12 @@ if __name__ == '__main__':
     num = 0
     conn = create_connection()
 
-    while ch != '4':
+    while ch != '3':
 
         print("MAIN MENU")
         print("1. Admin Login")
-        print("2. Supervisor Login")
-        print("3. Worker Login")
-        print("4. Exit")
+        print("2. Employee Login")
+        print("3. Exit")
         ch = input("Select Your Option ")
 
         if ch == '1':
@@ -40,16 +39,11 @@ if __name__ == '__main__':
             if admin.admin_login():
                 admin.admin_tasks()
         elif ch == '2':
-            supervisor = SupervisorService.Supervisor()
-            if supervisor.supervisor_login():
-                supervisor.supervisor_tasks()
+            employee = EmployeeService.Employee()
+            if employee.employee_login():
+                employee.employee_tasks()
 
         elif ch == '3':
-            worker = WorkerService.Worker()
-            if worker.worker_login():
-                worker.worker_tasks()
-
-        elif ch == '4':
             print("Thank You.")
         else:
             print("Invalid choice")

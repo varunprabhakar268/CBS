@@ -8,7 +8,7 @@ def create_tables(conn):
              created_at DATETIME DEFAULT CURRENT_TIMESTAMP);''')
     conn.commit()
 
-    # cursor.execute("INSERT INTO Admin(name,email,password) VALUES ('captain','captain@gmail.com','password');")
+    # cursor.execute("INSERT INTO Admin(name,email,password) VALUES ('captain','cap@gmail.com','password');")
     # conn.commit()
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS Employees
@@ -16,41 +16,57 @@ def create_tables(conn):
              name VARCHAR(30) NOT NULL,
              email VARCHAR(30)    NOT NULL UNIQUE,
              password VARCHAR(20),
-             role VARCHAR(10) DEFAULT "none",
              created_at DATETIME DEFAULT CURRENT_TIMESTAMP);''')
     conn.commit()
 
-    cursor.execute('''CREATE TABLE IF NOT EXISTS Supervisors
-             (id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-             name VARCHAR(30) NOT NULL,
-             email VARCHAR(20)    NOT NULL,
-             password VARCHAR(20),
-             assigned VARCHAR(20)    DEFAULT "no",
-             TeamName Varchar(20) NOT NULL,
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Cabs
+             (cab_number VARCHAR(20) NOT NULL PRIMARY KEY UNIQUE,
+             capacity INTEGER NOT NULL,
              created_at DATETIME DEFAULT CURRENT_TIMESTAMP);''')
     conn.commit()
 
-    cursor.execute('''CREATE TABLE IF NOT EXISTS Complaints
-             (id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-             accident_name           VARCHAR(30) NOT NULL,
-             comments           VARCHAR(50)    NOT NULL,
-             worker_id        INTEGER(10) NOT NULL,
-             status             VARCHAR(10) DEFAULT "open",
-             assigned_team      Varchar(20) DEFAULT "none",
+    cursor.execute('''CREATE TABLE IF NOT EXISTS cab_routes
+             (id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+             cab_number VARCHAR(30) NOT NULL,
+             route_id VARCHAR(30) NOT NULL,
+             stop_name VARCHAR(30) NOT NULL,
+             stop_stage INTEGER   NOT NULL,
+             seats_available   INTEGER(10),
+             timings TIME NOT NULL,
              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (worker_id) REFERENCES Employees(id) ON DELETE CASCADE,
-            FOREIGN KEY (assigned_team) REFERENCES Supervisors(TeamName) ON DELETE CASCADE);''')
+             FOREIGN KEY (cab_number) REFERENCES Cabs(cab_number) ON DELETE CASCADE);''')
     conn.commit()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS Report
+
+    cursor.execute('''
+    CREATE TRIGGER IF NOT EXISTS 'cab_routes_seats_available_val'
+    After INSERT ON cab_routes
+    WHEN new.seats_available IS NULL
+    BEGIN
+    UPDATE cab_routes
+    SET 
+    seats_available = (SELECT capacity FROM Cabs Where Cabs.cab_number = new.cab_number)
+    WHERE
+    cab_number = new.cab_number;
+    END;
+    ''')
+    conn.commit()
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Bookings
              (id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-             complaint_id           INTEGER(10) NOT NULL,
-             TeamName           VARCHAR(10)    NOT NULL,
-             root_cause        VARCHAR(50) NOT NULL,
-             details             VARCHAR(100) NOT NULL,
-             no_of_people_affected INTERGER NOT NULL,
-             no_of_casualties INTEGRER NOT NULL,
-             status             VARCHAR(10)  DEFAULT "none",
-             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (complaint_id) REFERENCES Complaints(id) ON DELETE CASCADE,
-            FOREIGN KEY (TeamName) REFERENCES Supervisors(TeamName)ON DELETE CASCADE);''')
+             emp_id           INTEGER(10) NOT NULL,
+             route_id           VARCHAR(10)    NOT NULL,
+             cab_number        VARCHAR(50) NOT NULL,
+             source        VARCHAR(50) NOT NULL,
+             destination        VARCHAR(50) NOT NULL,
+             timings       TIME,
+             cancelled VARCHAR(50) DEFAULT "no",
+             created_at DATETIME DEFAULT (datetime('now','localtime')),
+             FOREIGN KEY (route_id) REFERENCES Routes(route_id) ON DELETE CASCADE,
+             FOREIGN KEY (emp_id) REFERENCES Employees(id) ON DELETE CASCADE,
+             FOREIGN KEY (cab_number) REFERENCES Cabs(cab_number)ON DELETE CASCADE);''')
+    conn.commit()
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Routes
+             (route_id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+             route           VARCHAR(1000) NOT NULL);''')
     conn.commit()
