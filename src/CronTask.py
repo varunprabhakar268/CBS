@@ -4,6 +4,19 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import pandas as pd
+import sqlite3
+
+
+def create_monthly_bookings_graph():
+    conn = sqlite3.connect('/home/nineleaps/PythonAssignments/CBS/cbs_db.sqlite')
+    sql = """select strftime('%m',date(created_at)) as 'Month',count(*) as 'TotalBookings' from bookings 
+             where cancelled = 'no' 
+             group by strftime('%m',date(created_at))"""
+    monthly_booking_df = pd.read_sql_query(sql, conn)
+    plot = monthly_booking_df.plot.bar(x='Month', y='TotalBookings', rot=0)
+    fig = plot.get_figure()
+    fig.savefig("MonthlyBookings.pdf")
 
 
 def send_email():
@@ -18,7 +31,7 @@ def send_email():
     message["Subject"] = subject
     message["Bcc"] = receiver_email
     message.attach(MIMEText(body, "plain"))
-    filename = "../MonthlyBooking.pdf"
+    filename = "MonthlyBookings.pdf"
     with open(filename, "rb") as attachment:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(attachment.read())
@@ -35,4 +48,5 @@ def send_email():
         server.sendmail(sender_email, receiver_email, text)
 
 
+create_monthly_bookings_graph()
 send_email()
