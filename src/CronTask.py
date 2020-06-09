@@ -8,8 +8,8 @@ import pandas as pd
 import sqlite3
 
 
-def create_monthly_bookings_graph():
-    conn = sqlite3.connect('/home/nineleaps/PythonAssignments/CBS/cbs_db.sqlite')
+def create_monthly_bookings_report():
+    conn = sqlite3.connect('/home/nineleaps/PythonAssignments/CBS/src/cbs_db.sqlite')
     sql = """select strftime('%m',date(created_at)) as 'Month',count(*) as 'TotalBookings' from bookings 
              where cancelled = 'no' 
              group by strftime('%m',date(created_at))"""
@@ -48,5 +48,5 @@ def send_email():
         server.sendmail(sender_email, receiver_email, text)
 
 
-create_monthly_bookings_graph()
+create_monthly_bookings_report()
 send_email()
