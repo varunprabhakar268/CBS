@@ -175,8 +175,8 @@ class AdminRepository:
 
     def show_emp_bookings(self,emp_id):
         sql = """ select date(created_at),timings,cab_number,source,destination,id from bookings 
-                                                                                  where cancelled = 'no' and emp_id = {}
-                                                                              """.format(emp_id)
+                  where cancelled = 'no' and emp_id = {}
+              """.format(emp_id)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
@@ -184,8 +184,8 @@ class AdminRepository:
 
     def show_total_bookings_day(self, booking_date):
         sql = """select date(created_at) as 'Date', count(*) as 'TotalBookings'  from bookings 
-                                                                                     where date(created_at) = '{}' and cancelled = 'no' group by date(created_at)
-                                                                                     """.format(booking_date)
+                 where date(created_at) = '{}' and cancelled = 'no' group by date(created_at)
+              """.format(booking_date)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
@@ -193,9 +193,9 @@ class AdminRepository:
 
     def show_total_bookings_week(self,booking_week):
         sql = """select  strftime('%W',date(created_at)) as week_number , count(*) as 'TotalBookings'  from bookings
-                                                                                         where strftime('%W',date(created_at)) = '{}' and cancelled = 'no' 
-                                                                                         group by strftime('%W',date(created_at))
-                                                                                         """.format(booking_week)
+                 where strftime('%W',date(created_at)) = '{}' and cancelled = 'no' 
+                 group by strftime('%W',date(created_at))
+              """.format(booking_week)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
@@ -203,9 +203,9 @@ class AdminRepository:
 
     def show_total_bookings_month(self, booking_month):
         sql = """select  strftime('%m',date(created_at)) as 'Month' , count(*) as 'TotalBookings'  from bookings 
-                             where strftime('%m',date(created_at)) = '{}' and cancelled = 'no'
-                             group by strftime('%m',date(created_at))
-                             """.format(booking_month)
+                 where strftime('%m',date(created_at)) = '{}' and cancelled = 'no'
+                 group by strftime('%m',date(created_at))
+              """.format(booking_month)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)

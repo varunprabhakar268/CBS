@@ -16,19 +16,19 @@ class Employee:
         :return:
         """
         email = input("Enter Email Id: ")
-        record = self.employee_repository.employee_login(email)
+        employee = self.employee_repository.employee_login(email)
 
-        if record:
-            if record[1] is None:
+        if employee:
+            if employee[1] is None:
                 password = getpass('First time Login. Enter Password: ')
-                self.employee_repository.set_password(password, record[2])
-                self.employee_id = record[2]
+                self.employee_repository.set_password(password, employee[2])
+                self.employee_id = employee[2]
                 return True
             else:
                 password = getpass('Enter Password: ')
-                if record[1] == password:
+                if employee[1] == password:
                     print("Authentication Successful")
-                    self.employee_id = record[2]
+                    self.employee_id = employee[2]
                     return True
                 else:
                     print("Authentication failed. Please check your credentials")
@@ -51,7 +51,6 @@ class Employee:
                   "4: Cancel Booking\n"
                   "5: Exit\n")
             option = input("Select option: ")
-
             if option == '1':
                 self.book_cab()
             elif option == '2':
@@ -71,22 +70,20 @@ class Employee:
         :return:
         """
         try:
-            result = self.employee_repository.show_past_bookings(self.employee_id)
-
-            if result:
-                for i in result:
-                    print("Booking Id : {}".format(i[5]))
-                    print("Date : {}".format(i[0]))
-                    print("Pick up time : {}".format(i[1]))
-                    print("Cab_Number : {}".format(i[2]))
-                    print("Pick up location: {}".format(i[3]))
-                    print("Destination : {}".format(i[4]))
+            bookings = self.employee_repository.show_past_bookings(self.employee_id)
+            if bookings:
+                for booking in bookings:
+                    print("Booking Id : {}".format(booking[5]))
+                    print("Date : {}".format(booking[0]))
+                    print("Pick up time : {}".format(booking[1]))
+                    print("Cab_Number : {}".format(booking[2]))
+                    print("Pick up location: {}".format(booking[3]))
+                    print("Destination : {}".format(booking[4]))
                     print("----------------------------")
                 return True
             else:
-                print("No records found.")
+                print("No bookings found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -97,22 +94,20 @@ class Employee:
         :return:
         """
         try:
-            result = self.employee_repository.show_upcoming_bookings(self.employee_id)
-
-            if result:
-                for i in result:
-                    print("Booking Id : {}".format(i[5]))
-                    print("Date : {}".format(i[0]))
-                    print("Pick up time : {}".format(i[1]))
-                    print("Cab_Number : {}".format(i[2]))
-                    print("Pick up location: {}".format(i[3]))
-                    print("Destination : {}".format(i[4]))
+            bookings = self.employee_repository.show_upcoming_bookings(self.employee_id)
+            if bookings:
+                for booking in bookings:
+                    print("Booking Id : {}".format(booking[5]))
+                    print("Date : {}".format(booking[0]))
+                    print("Pick up time : {}".format(booking[1]))
+                    print("Cab_Number : {}".format(booking[2]))
+                    print("Pick up location: {}".format(booking[3]))
+                    print("Destination : {}".format(booking[4]))
                     print("----------------------------")
                 return True
             else:
                 print("No bookings found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -123,19 +118,17 @@ class Employee:
         :return:
         """
         try:
-            result = self.employee_repository.show_all_routes()
-
-            if result:
+            routes = self.employee_repository.show_all_routes()
+            if routes:
                 print("\nAvailable Routes: \n")
-                for i in result:
-                    print("Route Id: {}".format(i[0]))
-                    print("Route : {}".format(i[1]))
+                for route in routes:
+                    print("Route Id: {}".format(route[0]))
+                    print("Route : {}".format(route[1]))
                     print("----------------------------")
                 return True
             else:
                 print("No records found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
@@ -144,14 +137,12 @@ class Employee:
         """
         check availability of cabs.
         """
-        records = self.employee_repository.check_availability(route_id, source, destination, timings)
-
-        print(records)
-        if records:
+        bookings = self.employee_repository.check_availability(route_id, source, destination, timings)
+        if bookings:
             print("All Available Cabs after {}: \n".format(timings))
-            for record in records:
+            for booking in bookings:
                 print('''Cab Number: {}\nTimings: {}\nSeats Available: {}\n
-                          '''.format(record[0], record[1], record[2]))
+                          '''.format(booking[0], booking[1], booking[2]))
             return True
         else:
             print("No cabs available")
@@ -168,20 +159,15 @@ class Employee:
             source = input("Enter Pick up location: ")
             destination = input("Enter Destination: ")
             timings = input("Enter Timings (list all available cabs after this time) in HH:SS format: ")
-
             if self.check_availability(route_id, source, destination, timings):
-
                 cab_num = input("Enter the vehicle number of the cab you want to book: ")
                 time = input("Enter pickup time as per cab timings in HH:SS format: ")
                 self.employee_repository.book_cab(self.employee_id, route_id, cab_num, source, destination, time)
-
                 print("Cab booked successfully! Cab Number: {}".format(cab_num))
                 self.decrement_seats(cab_num, route_id, source, destination, time)
                 return True
-
             else:
                 return False
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -194,7 +180,6 @@ class Employee:
         try:
             self.employee_repository.decrement_seats(cab_num, route_id, source, destination, time)
             return True
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -206,9 +191,7 @@ class Employee:
         """
         try:
             self.employee_repository.increment_seats(cab_num, route_id, source, destination, time)
-
             return True
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -221,28 +204,25 @@ class Employee:
         try:
             if self.show_upcoming_bookings():
                 booking_id = int(input("Enter Booking Id of the ride you want to cancel: "))
-                record = self.get_booking_by_id(booking_id)
-                if len(record) != 0:
-                    pickup_time = datetime.strptime(record[1], '%H:%M').time()
-                    booking_date = datetime.strptime(record[0], '%Y-%m-%d').date()
+                booking = self.get_booking_by_id(booking_id)
+                if booking:
+                    pickup_time = datetime.strptime(booking[1], '%H:%M').time()
+                    booking_date = datetime.strptime(booking[0], '%Y-%m-%d').date()
                     difference = datetime.combine(booking_date, pickup_time) - datetime.combine(date.today(),
                                                                                                 datetime.now().time())
                     if (difference.total_seconds() / 60) > 30:
                         self.employee_repository.cancel_booking(booking_id)
-
                         print("Booking cancelled successfully.")
-                        self.increment_seats(record[2], record[3], record[4], record[5], record[1])
+                        self.increment_seats(booking[2], booking[3], booking[4], booking[5], booking[1])
                         return True
                     else:
-                        print(
-                            "Booking Cancellation Failed. Cancellations should be done 30 mins prior to the scheduled time.")
+                        print("Booking Cancellation Failed. Cancellations should be done 30 mins prior to the scheduled time.")
                         return False
                 else:
                     print("No records found.")
                     return False
             else:
                 return False
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -253,10 +233,12 @@ class Employee:
         :return:
         """
         try:
-            result = self.employee_repository.get_booking_by_id(booking_id)
-            if result:
-                return result
-
+            booking = self.employee_repository.get_booking_by_id(booking_id)
+            if booking:
+                return booking
+            else:
+                print("Invalid Booking Id.")
+                return False
         except Exception as e:
             print("Some Error occurred.")
             return False

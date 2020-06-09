@@ -16,13 +16,12 @@ class Admin:
         :return:
         """
         email = input("Enter Email: ")
-
-        record = self.admin_repository.admin_login(email)
-        if record:
+        user = self.admin_repository.admin_login(email)
+        if user:
             password = getpass('Enter Password: ')
-            if record[1] == password:
+            if user[1] == password:
                 print("Authentication Successful")
-                self.admin_id = record[2]
+                self.admin_id = user[2]
                 return True
             else:
                 print("Authentication failed. Please check your credentials")
@@ -45,7 +44,6 @@ class Admin:
                   "4: Bookings\n"
                   "5: Exit\n")
             option = input("Select option: ")
-
             if option == '1':
                 self.admin_employee_management()
             elif option == '2':
@@ -141,7 +139,7 @@ class Admin:
             elif option == '5':
                 self.update_cab_route()
             elif option == '6':
-                self.get_all_routes()
+                self.get_all_cab_routes()
             elif option == '7':
                 self.delete_cab_route()
             elif option == '8':
@@ -189,11 +187,9 @@ class Admin:
             email = input("Enter email: ")
             if not InputValidations.validate_email(email):
                 return False
-
             self.admin_repository.create_employee(name, email)
             print("Employee created successfully!")
             return True
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
@@ -202,13 +198,11 @@ class Admin:
         """
         Get details of a particular employee.
         """
-
-        record = self.admin_repository.get_employee_by_id(employee_id)
-
-        if record:
+        employee = self.admin_repository.get_employee_by_id(employee_id)
+        if employee:
             print('''Name: {}\nEmail: {}\n
-                      '''.format(record[0], record[1]))
-            return record
+                      '''.format(employee[0], employee[1]))
+            return employee
         else:
             print("Invalid Id")
             return False
@@ -220,18 +214,18 @@ class Admin:
         """
         try:
             employee_id = int(input("Enter Employee Id "))
-            record = self.get_employee_by_id(employee_id)
-            if record:
-                name = (input("Enter Updated Name or Enter to continue ") or record[0])
+            employee = self.get_employee_by_id(employee_id)
+            if employee:
+                name = (input("Enter Updated Name or Enter to continue ") or employee[0])
                 if not name.isalpha():
                     print("Invalid data format. Name should contain only alphabets. ")
                     return False
-                email = (input("Enter Updated Email or Enter to continue ") or record[1])
+                email = (input("Enter Updated Email or Enter to continue ") or employee[1])
                 if not InputValidations.validate_email(email):
                     return False
                 self.admin_repository.update_employee(name, email, employee_id)
                 print("Record Updated Successfully")
-            record = self.get_employee_by_id(employee_id)
+            updated_employee = self.get_employee_by_id(employee_id)
             return True
         except ValueError:
             print("Invalid input. Please try again.")
@@ -248,8 +242,8 @@ class Admin:
         try:
             self.show_all_employees()
             employee_id = int(input("Enter the Employee id: "))
-            result = self.get_employee_by_id(employee_id)
-            if result:
+            employee = self.get_employee_by_id(employee_id)
+            if employee:
                 self.admin_repository.delete_employee(employee_id)
                 print("Employee deleted successfully")
                 return True
@@ -266,24 +260,20 @@ class Admin:
         :return:
         """
         try:
-            result = self.admin_repository.show_all_employees()
-
-            if result:
-                for i in result:
-                    print("Employee Id : {}".format(i[0]))
-                    print("Name : {}".format(i[1]))
-                    print("Email : {}".format(i[2]))
+            employees = self.admin_repository.show_all_employees()
+            if employees:
+                for employee in employees:
+                    print("Employee Id : {}".format(employee[0]))
+                    print("Name : {}".format(employee[1]))
+                    print("Email : {}".format(employee[2]))
                     print("----------------------------")
                 return True
             else:
                 print("No records found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
-
-    # ----------------------------------------------------------
 
     def create_cab(self):
         """
@@ -296,7 +286,6 @@ class Admin:
             self.admin_repository.create_cab(cab_num, capacity)
             print("Cab added successfully!")
             return True
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
@@ -311,7 +300,6 @@ class Admin:
             self.admin_repository.create_route(route)
             print("Route added successfully!")
             return True
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
@@ -320,12 +308,11 @@ class Admin:
         """
         Get details of a particular cab.
         """
-        record = self.admin_repository.get_cab_by_id(cab_num)
-
-        if record:
+        cab = self.admin_repository.get_cab_by_id(cab_num)
+        if cab:
             print('''Cab Number: {}\nSeating Capacity: {}\n
-                      '''.format(record[0], record[1]))
-            return record
+                      '''.format(cab[0], cab[1]))
+            return cab
         else:
             print("Invalid Cab Number")
             return False
@@ -334,13 +321,11 @@ class Admin:
         """
         Get details of a particular route.
         """
-        record = self.admin_repository.get_route_by_id(route_id)
-
-        if record:
-            print(record)
+        route = self.admin_repository.get_route_by_id(route_id)
+        if route:
             print('''Route Id: {}\nRoute: {}\n
-                      '''.format(record[0], record[1]))
-            return record
+                      '''.format(route[0], route[1]))
+            return route
         else:
             print("Invalid Route Id")
             return False
@@ -352,12 +337,12 @@ class Admin:
         """
         try:
             cab_num = input("Enter Cab Number: ")
-            record = self.get_cab_by_id(cab_num)
-            if record:
-                capacity = (int(input("Enter Updated Seating Capacity or Enter to continue ")) or record[1])
+            cab = self.get_cab_by_id(cab_num)
+            if cab:
+                capacity = (int(input("Enter Updated Seating Capacity or Enter to continue ")) or cab[1])
                 self.admin_repository.update_cab(capacity, cab_num)
                 print("Record Updated Successfully")
-            record = self.get_cab_by_id(cab_num)
+            updated_cab = self.get_cab_by_id(cab_num)
             return True
         except ValueError:
             print("Invalid input. Please try again.")
@@ -374,8 +359,8 @@ class Admin:
         try:
             self.show_all_cabs()
             cab_num = input("Enter the Cab Number: ")
-            result = self.get_cab_by_id(cab_num)
-            if result:
+            cab = self.get_cab_by_id(cab_num)
+            if cab:
                 self.admin_repository.delete_cab(cab_num)
                 print("Cab removed successfully")
                 return True
@@ -394,8 +379,8 @@ class Admin:
         try:
             self.show_all_routes()
             route_id = int(input("Enter Route Id: "))
-            result = self.get_route_by_id(route_id)
-            if result:
+            route = self.get_route_by_id(route_id)
+            if route:
                 self.admin_repository.delete_route(route_id)
                 print("Route removed successfully")
                 return True
@@ -412,18 +397,17 @@ class Admin:
         :return:
         """
         try:
-            result = self.admin_repository.show_all_cabs()
+            cabs = self.admin_repository.show_all_cabs()
 
-            if result:
-                for i in result:
-                    print("Cab Number: {}".format(i[0]))
-                    print("Seating Capacity : {}".format(i[1]))
+            if cabs:
+                for cab in cabs:
+                    print("Cab Number: {}".format(cab[0]))
+                    print("Seating Capacity : {}".format(cab[1]))
                     print("----------------------------")
                 return True
             else:
                 print("No records found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
@@ -434,18 +418,16 @@ class Admin:
         :return:
         """
         try:
-            result = self.admin_repository.show_all_routes()
-
-            if result:
-                for i in result:
-                    print("Route Id: {}".format(i[0]))
-                    print("Route : {}".format(i[1]))
+            routes = self.admin_repository.show_all_routes()
+            if routes:
+                for route in routes:
+                    print("Route Id: {}".format(route[0]))
+                    print("Route : {}".format(route[1]))
                     print("----------------------------")
                 return True
             else:
                 print("No records found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
@@ -456,60 +438,53 @@ class Admin:
         :return:
         """
         try:
-
             cab_num = input("Enter Cab Number: ")
             route_id = input("Enter Route Id: ")
             timings = input("Enter Timings in HH:MM format: ")
-
             num = int(input("Enter number of stops: "))
             for i in range(num):
                 stop_name = input("Enter stop name: ")
                 stop_stage = int(input("Enter stop stage (ex: In the route koramangala-hsr-btm, stage of btm is 2): "))
                 self.admin_repository.create_cab_route(cab_num, route_id, stop_name, stop_stage, timings)
-
                 print("stop added successfully!\n")
             print("Route added successfully!")
             return True
-
         except Exception as e:
             print("Some Error occurred.Please try again")
             return False
 
-    def get_route_by_cab_num(self, cab_num):
-
+    def get_cab_route_by_cab_num(self, cab_num):
         """
         Get route details of a particular cab.
         """
-        record = self.admin_repository.get_route_by_cab_num(cab_num)
-
-        if record:
-            for i in record:
-                print("\nId : {}".format(i[0]))
-                print("Cab Number : {}".format(i[1]))
-                print("Route Id : {}".format(i[2]))
-                print("Stop Name : {}".format(i[3]))
-                print("Stop stage : {}".format(i[4]))
-                print("Timings : {}".format(i[5]))
+        cab_routes = self.admin_repository.get_route_by_cab_num(cab_num)
+        if cab_routes:
+            for cab_route in cab_routes:
+                print("\nId : {}".format(cab_route[0]))
+                print("Cab Number : {}".format(cab_route[1]))
+                print("Route Id : {}".format(cab_route[2]))
+                print("Stop Name : {}".format(cab_route[3]))
+                print("Stop stage : {}".format(cab_route[4]))
+                print("Timings : {}".format(cab_route[5]))
                 print("----------------------------")
             return True
         else:
             print("Invalid Input")
             return False
 
-    def get_all_routes(self):
+    def get_all_cab_routes(self):
         """
         Get route details of cabs.
         """
-        record = self.admin_repository.get_all_routes()
-
-        if record:
-            for i in record:
-                print("\nId : {}".format(i[0]))
-                print("Cab Number : {}".format(i[1]))
-                print("Route Id : {}".format(i[2]))
-                print("Stop Name : {}".format(i[3]))
-                print("Stop stage : {}".format(i[4]))
-                print("Timings : {}".format(i[5]))
+        cab_routes = self.admin_repository.get_all_routes()
+        if cab_routes:
+            for cab_route in cab_routes:
+                print("\nId : {}".format(cab_route[0]))
+                print("Cab Number : {}".format(cab_route[1]))
+                print("Route Id : {}".format(cab_route[2]))
+                print("Stop Name : {}".format(cab_route[3]))
+                print("Stop stage : {}".format(cab_route[4]))
+                print("Timings : {}".format(cab_route[5]))
                 print("----------------------------")
             return True
         else:
@@ -517,20 +492,17 @@ class Admin:
             return False
 
     def get_cab_route_by_id(self, id):
-
         """
         Get stop details of a particular cab.
         """
-        record = self.admin_repository.get_cab_route_by_id(id)
-
-
-        if record:
-            print("Cab Number : {}".format(record[1]))
-            print("Route Id : {}".format(record[2]))
-            print("Stop Name : {}".format(record[3]))
-            print("Stop stage : {}".format(record[4]))
-            print("Timings : {}".format(record[5]))
-            return record
+        cab_route = self.admin_repository.get_cab_route_by_id(id)
+        if cab_route:
+            print("Cab Number : {}".format(cab_route[1]))
+            print("Route Id : {}".format(cab_route[2]))
+            print("Stop Name : {}".format(cab_route[3]))
+            print("Stop stage : {}".format(cab_route[4]))
+            print("Timings : {}".format(cab_route[5]))
+            return cab_route
         else:
             print("Invalid Input")
             return False
@@ -542,28 +514,27 @@ class Admin:
         """
         try:
             cab_num = input("Enter Cab Number: ")
-            records = self.get_route_by_cab_num(cab_num)
-            if records:
+            cab_routes = self.get_cab_route_by_cab_num(cab_num)
+            if cab_routes:
                 id = int(input("Enter Id of the record you want to update: "))
-                record = self.get_cab_route_by_id(id)
-                print(record)
-                if record:
-                    updated_cab_num = (input("Enter Updated Cab Number or Enter to continue ") or record[1])
-                    route_id = (input("Enter Updated Route Id or Enter to continue ") or record[2])
-                    stop_name = (input("Enter Updated stop name or Enter to continue ") or record[3])
-                    stop_stage = (input("Enter Updated stage or Enter to continue ") or record[4])
-                    timings = (input("Enter Updated timings or Enter to continue ") or record[5])
+                cab_route = self.get_cab_route_by_id(id)
+                if cab_route:
+                    updated_cab_num = (input("Enter Updated Cab Number or Enter to continue ") or cab_route[1])
+                    route_id = (input("Enter Updated Route Id or Enter to continue ") or cab_route[2])
+                    stop_name = (input("Enter Updated stop name or Enter to continue ") or cab_route[3])
+                    stop_stage = (input("Enter Updated stage or Enter to continue ") or cab_route[4])
+                    timings = (input("Enter Updated timings or Enter to continue ") or cab_route[5])
                     self.admin_repository.update_cab_route(updated_cab_num, route_id, stop_name, stop_stage, timings,
-                                                              id)
+                                                           id)
                     print("\nRecord Updated Successfully")
+                    updated_cab_route = self.get_cab_route_by_id(id)
+                    return True
                 else:
                     print("Invalid input.")
+                    return False
             else:
                 print("Record not found.")
                 return False
-            record = self.get_cab_route_by_id(id)
-            return True
-
         except ValueError:
             print("Invalid input. Please try again.")
             return False
@@ -578,10 +549,10 @@ class Admin:
         """
         try:
             cab_num = input("Enter Cab Number: ")
-            records = self.get_route_by_cab_num(cab_num)
-            if records:
-                route_id = input("Enter Route Id: ")
-                self.admin_repository.delete_cab_route(cab_num, route_id)
+            cab_routes = self.get_cab_route_by_cab_num(cab_num)
+            if cab_routes:
+                cab_route_id = input("Enter Cab Route Id: ")
+                self.admin_repository.delete_cab_route(cab_num, cab_route_id)
                 print("Deleted successfully.")
                 return True
             else:
@@ -598,16 +569,15 @@ class Admin:
         """
         try:
             emp_id = int(input("Enter Employee Id: "))
-            result = self.admin_repository.show_emp_bookings(emp_id)
-
-            if result:
-                for i in result:
-                    print("Booking Id : {}".format(i[5]))
-                    print("Date : {}".format(i[0]))
-                    print("Pick up time : {}".format(i[1]))
-                    print("Cab_Number : {}".format(i[2]))
-                    print("Pick up location: {}".format(i[3]))
-                    print("Destination : {}".format(i[4]))
+            bookings = self.admin_repository.show_emp_bookings(emp_id)
+            if bookings:
+                for booking in bookings:
+                    print("Booking Id : {}".format(booking[5]))
+                    print("Date : {}".format(booking[0]))
+                    print("Pick up time : {}".format(booking[1]))
+                    print("Cab_Number : {}".format(booking[2]))
+                    print("Pick up location: {}".format(booking[3]))
+                    print("Destination : {}".format(booking[4]))
                     print("----------------------------")
                 return True
             else:
@@ -627,16 +597,14 @@ class Admin:
             booking_date = input("Enter Date in YYYY-MM-DD format: ")
             if not validate_date(booking_date):
                 return False
-            result = self.admin_repository.show_total_bookings_day(booking_date)
-
-            if result:
-                print("Date: {}".format(result[0]))
-                print("Total Bookings : {}".format(result[1]))
+            bookings = self.admin_repository.show_total_bookings_day(booking_date)
+            if bookings:
+                print("Date: {}".format(bookings[0]))
+                print("Total Bookings : {}".format(bookings[1]))
                 return True
             else:
                 print("No records found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -649,16 +617,14 @@ class Admin:
         try:
             week = int(input("Enter Week Number: "))
             booking_week = '%02d' % week
-            result = self.admin_repository.show_total_bookings_week(booking_week)
-
-            if result:
-                print("Date: {}".format(result[0]))
-                print("Total Bookings : {}".format(result[1]))
+            bookings = self.admin_repository.show_total_bookings_week(booking_week)
+            if bookings:
+                print("Date: {}".format(bookings[0]))
+                print("Total Bookings : {}".format(bookings[1]))
                 return True
             else:
                 print("No records found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -671,16 +637,14 @@ class Admin:
         try:
             month = int(input("Enter Month:  "))
             booking_month = '%02d' % month
-            result = self.admin_repository.show_total_bookings_month(booking_month)
-
-            if result:
-                print("Date: {}".format(result[0]))
-                print("Total Bookings : {}".format(result[1]))
+            bookings = self.admin_repository.show_total_bookings_month(booking_month)
+            if bookings:
+                print("Date: {}".format(bookings[0]))
+                print("Total Bookings : {}".format(bookings[1]))
                 return True
             else:
                 print("No records found.")
                 return False
-
         except Exception as e:
             print("Some Error occurred.")
             return False
