@@ -1,7 +1,6 @@
 from getpass import getpass
-from src import Main
-
 from src import InputValidations
+from src.AdminRepository import AdminRepository
 from src.InputValidations import validate_date
 
 
@@ -9,7 +8,7 @@ class Admin:
 
     def __init__(self):
         self.admin_id = None
-        self.conn = Main.create_connection()
+        self.admin_repository = AdminRepository()
 
     def admin_login(self):
         """
@@ -18,11 +17,7 @@ class Admin:
         """
         email = input("Enter Email: ")
 
-        sql = "SELECT email,password,id FROM Admin WHERE email = '{}'".format(email)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchone()
+        record = self.admin_repository.admin_login(email)
         if record:
             password = getpass('Enter Password: ')
             if record[1] == password:
@@ -52,9 +47,9 @@ class Admin:
             option = input("Select option: ")
 
             if option == '1':
-                self.admin_employee_mgmnt()
+                self.admin_employee_management()
             elif option == '2':
-                self.admin_cab_mgmnt()
+                self.admin_cab_management()
             elif option == '3':
                 self.admin_route_management()
             elif option == '4':
@@ -64,7 +59,7 @@ class Admin:
             else:
                 print("Invalid choice")
 
-    def admin_employee_mgmnt(self):
+    def admin_employee_management(self):
         """
         employee management.
         :return:
@@ -81,7 +76,7 @@ class Admin:
             if option == '1':
                 self.create_employee()
             elif option == '2':
-                self.show_allemployees()
+                self.show_all_employees()
             elif option == '3':
                 self.update_employee()
             elif option == '4':
@@ -91,7 +86,7 @@ class Admin:
             else:
                 print("Invalid choice")
 
-    def admin_cab_mgmnt(self):
+    def admin_cab_management(self):
         """
         cab management.
         :return:
@@ -194,15 +189,9 @@ class Admin:
             email = input("Enter email: ")
             if not InputValidations.validate_email(email):
                 return False
-            sql = """
-                    INSERT INTO Employees (name,email)
-                    VALUES ('{}','{}')
-                  """.format(name, email)
 
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                print("Employee created successfully!")
+            self.admin_repository.create_employee(name, email)
+            print("Employee created successfully!")
             return True
 
         except Exception as e:
@@ -214,11 +203,7 @@ class Admin:
         Get details of a particular employee.
         """
 
-        sql = "SELECT name,email FROM Employees WHERE id = {}".format(employee_id)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchone()
+        record = self.admin_repository.get_employee_by_id(employee_id)
 
         if record:
             print('''Name: {}\nEmail: {}\n
@@ -244,16 +229,7 @@ class Admin:
                 email = (input("Enter Updated Email or Enter to continue ") or record[1])
                 if not InputValidations.validate_email(email):
                     return False
-                sql = ''' UPDATE Employees
-                                  SET name = '{}' ,
-                                      email = '{}'                    
-                                  WHERE id = {}'''.format(name, email, employee_id)
-
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    self.conn.commit()
-
+                self.admin_repository.update_employee(name, email, employee_id)
                 print("Record Updated Successfully")
             record = self.get_employee_by_id(employee_id)
             return True
@@ -270,15 +246,12 @@ class Admin:
         :return:
         """
         try:
-            self.show_allemployees()
+            self.show_all_employees()
             employee_id = int(input("Enter the Employee id: "))
             result = self.get_employee_by_id(employee_id)
             if result:
-                sql = 'DELETE FROM Employees WHERE id={}'.format(employee_id)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    print("Employee deleted successfully")
+                self.admin_repository.delete_employee(employee_id)
+                print("Employee deleted successfully")
                 return True
             else:
                 print("Invalid employee Id.")
@@ -287,17 +260,14 @@ class Admin:
             print("Some Error occurred.Please try again")
             return False
 
-    def show_allemployees(self):
+    def show_all_employees(self):
         """
         show details of all employees.
         :return:
         """
         try:
-            sql = "select * from Employees"
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchall()
+            result = self.admin_repository.show_all_employees()
+
             if result:
                 for i in result:
                     print("Employee Id : {}".format(i[0]))
@@ -323,15 +293,8 @@ class Admin:
         try:
             cab_num = input("Enter Cab Number: ")
             capacity = int(input("Enter seating capacity: "))
-            sql = """
-                    INSERT INTO Cabs (cab_number,capacity)
-                    VALUES ('{}',{})
-                  """.format(cab_num, capacity)
-
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                print("Cab added successfully!")
+            self.admin_repository.create_cab(cab_num, capacity)
+            print("Cab added successfully!")
             return True
 
         except Exception as e:
@@ -345,15 +308,8 @@ class Admin:
         """
         try:
             route = input("Enter Route/Route Description: ")
-            sql = """
-                    INSERT INTO Routes (route)
-                    VALUES ('{}')
-                  """.format(route)
-
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                print("Route added successfully!")
+            self.admin_repository.create_route(route)
+            print("Route added successfully!")
             return True
 
         except Exception as e:
@@ -364,12 +320,7 @@ class Admin:
         """
         Get details of a particular cab.
         """
-
-        sql = "SELECT cab_number,capacity FROM Cabs WHERE cab_number = '{}'".format(cab_num)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchone()
+        record = self.admin_repository.get_cab_by_id(cab_num)
 
         if record:
             print('''Cab Number: {}\nSeating Capacity: {}\n
@@ -383,11 +334,7 @@ class Admin:
         """
         Get details of a particular route.
         """
-        sql = "SELECT * FROM Routes WHERE route_id = {}".format(route_id)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchone()
+        record = self.admin_repository.get_route_by_id(route_id)
 
         if record:
             print(record)
@@ -408,15 +355,7 @@ class Admin:
             record = self.get_cab_by_id(cab_num)
             if record:
                 capacity = (int(input("Enter Updated Seating Capacity or Enter to continue ")) or record[1])
-                sql = ''' UPDATE Cabs
-                                  SET capacity = {}                   
-                                  WHERE cab_number = "{}" '''.format(capacity, cab_num)
-
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    self.conn.commit()
-
+                self.admin_repository.update_cab(capacity, cab_num)
                 print("Record Updated Successfully")
             record = self.get_cab_by_id(cab_num)
             return True
@@ -437,11 +376,8 @@ class Admin:
             cab_num = input("Enter the Cab Number: ")
             result = self.get_cab_by_id(cab_num)
             if result:
-                sql = 'DELETE FROM Cabs WHERE cab_number="{}"'.format(cab_num)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    print("Cab removed successfully")
+                self.admin_repository.delete_cab(cab_num)
+                print("Cab removed successfully")
                 return True
             else:
                 print("Invalid Cab Number.")
@@ -460,11 +396,8 @@ class Admin:
             route_id = int(input("Enter Route Id: "))
             result = self.get_route_by_id(route_id)
             if result:
-                sql = 'DELETE FROM Routes WHERE route_id={}'.format(route_id)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    print("Route removed successfully")
+                self.admin_repository.delete_route(route_id)
+                print("Route removed successfully")
                 return True
             else:
                 print("Invalid Route Id.")
@@ -479,11 +412,8 @@ class Admin:
         :return:
         """
         try:
-            sql = "select cab_number,capacity from Cabs"
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchall()
+            result = self.admin_repository.show_all_cabs()
+
             if result:
                 for i in result:
                     print("Cab Number: {}".format(i[0]))
@@ -504,11 +434,8 @@ class Admin:
         :return:
         """
         try:
-            sql = "select * from Routes"
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchall()
+            result = self.admin_repository.show_all_routes()
+
             if result:
                 for i in result:
                     print("Route Id: {}".format(i[0]))
@@ -538,13 +465,8 @@ class Admin:
             for i in range(num):
                 stop_name = input("Enter stop name: ")
                 stop_stage = int(input("Enter stop stage (ex: In the route koramangala-hsr-btm, stage of btm is 2): "))
+                self.admin_repository.create_cab_route(cab_num, route_id, stop_name, stop_stage, timings)
 
-                sql = """Insert into cab_routes(cab_number,route_id,stop_name,stop_stage,timings)
-                           Values('{}','{}','{}',{},'{}')""".format(cab_num, route_id, stop_name, stop_stage, timings)
-
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
                 print("stop added successfully!\n")
             print("Route added successfully!")
             return True
@@ -558,12 +480,7 @@ class Admin:
         """
         Get route details of a particular cab.
         """
-        sql = '''SELECT id,cab_number,route_id,stop_name,stop_stage,timings FROM cab_routes 
-                 WHERE cab_number = "{}" '''.format(cab_num)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchall()
+        record = self.admin_repository.get_route_by_cab_num(cab_num)
 
         if record:
             for i in record:
@@ -580,15 +497,10 @@ class Admin:
             return False
 
     def get_all_routes(self):
-
         """
         Get route details of cabs.
         """
-        sql = '''SELECT id,cab_number,route_id,stop_name,stop_stage,timings FROM cab_routes'''
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchall()
+        record = self.admin_repository.get_all_routes()
 
         if record:
             for i in record:
@@ -609,12 +521,8 @@ class Admin:
         """
         Get stop details of a particular cab.
         """
-        sql = '''SELECT id,cab_number,route_id,stop_name,stop_stage,timings FROM cab_routes 
-                 WHERE id = {} '''.format(id)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchone()
+        record = self.admin_repository.get_cab_route_by_id(id)
+
 
         if record:
             print("Cab Number : {}".format(record[1]))
@@ -645,21 +553,9 @@ class Admin:
                     stop_name = (input("Enter Updated stop name or Enter to continue ") or record[3])
                     stop_stage = (input("Enter Updated stage or Enter to continue ") or record[4])
                     timings = (input("Enter Updated timings or Enter to continue ") or record[5])
-
-                    sql = ''' UPDATE cab_routes
-                                      SET cab_number = '{}' ,
-                                          route_id = '{}' ,
-                                          stop_name = '{}',
-                                          stop_stage = {},
-                                          timings = '{}'
-                                      WHERE id = {}'''.format(updated_cab_num, route_id, stop_name, stop_stage, timings,
+                    self.admin_repository.update_cab_route(updated_cab_num, route_id, stop_name, stop_stage, timings,
                                                               id)
-
-                    with self.conn:
-                        cur = self.conn.cursor()
-                        cur.execute(sql)
-                        self.conn.commit()
-                        print("\nRecord Updated Successfully")
+                    print("\nRecord Updated Successfully")
                 else:
                     print("Invalid input.")
             else:
@@ -685,11 +581,7 @@ class Admin:
             records = self.get_route_by_cab_num(cab_num)
             if records:
                 route_id = input("Enter Route Id: ")
-                sql = 'DELETE FROM cab_routes WHERE cab_number="{}" and route_id = "{}"'.format(cab_num, route_id)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    self.conn.commit()
+                self.admin_repository.delete_cab_route(cab_num, route_id)
                 print("Deleted successfully.")
                 return True
             else:
@@ -706,13 +598,8 @@ class Admin:
         """
         try:
             emp_id = int(input("Enter Employee Id: "))
-            sql = """ select date(created_at),timings,cab_number,source,destination,id from bookings 
-                      where cancelled = 'no' and emp_id = {}
-                  """.format(emp_id)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchall()
+            result = self.admin_repository.show_emp_bookings(emp_id)
+
             if result:
                 for i in result:
                     print("Booking Id : {}".format(i[5]))
@@ -740,13 +627,8 @@ class Admin:
             booking_date = input("Enter Date in YYYY-MM-DD format: ")
             if not validate_date(booking_date):
                 return False
-            sql = """select date(created_at) as 'Date', count(*) as 'TotalBookings'  from bookings 
-                     where date(created_at) = '{}' and cancelled = 'no' group by date(created_at)
-                     """.format(booking_date)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchone()
+            result = self.admin_repository.show_total_bookings_day(booking_date)
+
             if result:
                 print("Date: {}".format(result[0]))
                 print("Total Bookings : {}".format(result[1]))
@@ -767,15 +649,8 @@ class Admin:
         try:
             week = int(input("Enter Week Number: "))
             booking_week = '%02d' % week
+            result = self.admin_repository.show_total_bookings_week(booking_week)
 
-            sql = """select  strftime('%W',date(created_at)) as week_number , count(*) as 'TotalBookings'  from bookings
-                     where strftime('%W',date(created_at)) = '{}' and cancelled = 'no' 
-                     group by strftime('%W',date(created_at))
-                     """.format(booking_week)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchone()
             if result:
                 print("Date: {}".format(result[0]))
                 print("Total Bookings : {}".format(result[1]))
@@ -796,14 +671,8 @@ class Admin:
         try:
             month = int(input("Enter Month:  "))
             booking_month = '%02d' % month
-            sql = """select  strftime('%m',date(created_at)) as 'Month' , count(*) as 'TotalBookings'  from bookings 
-                     where strftime('%m',date(created_at)) = '{}' and cancelled = 'no'
-                     group by strftime('%m',date(created_at))
-                     """.format(booking_month)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchone()
+            result = self.admin_repository.show_total_bookings_month(booking_month)
+
             if result:
                 print("Date: {}".format(result[0]))
                 print("Total Bookings : {}".format(result[1]))

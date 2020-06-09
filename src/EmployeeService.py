@@ -1,13 +1,14 @@
 from getpass import getpass
-from src import Main
 from datetime import datetime, date
+
+from src.EmployeeRepository import EmployeeRepository
 
 
 class Employee:
 
     def __init__(self):
         self.employee_id = None
-        self.conn = Main.create_connection()
+        self.employee_repository = EmployeeRepository()
 
     def employee_login(self):
         """
@@ -15,18 +16,12 @@ class Employee:
         :return:
         """
         email = input("Enter Email Id: ")
-        sql = "SELECT email,password,id FROM Employees WHERE email = '{}'".format(email)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            record = cur.fetchone()
+        record = self.employee_repository.employee_login(email)
+
         if record:
             if record[1] is None:
                 password = getpass('First time Login. Enter Password: ')
-                sql = "Update Employees SET password = '{}' WHERE id = {}".format(password, record[2])
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
+                self.employee_repository.set_password(password, record[2])
                 self.employee_id = record[2]
                 return True
             else:
@@ -76,15 +71,8 @@ class Employee:
         :return:
         """
         try:
-            sql = """ select date(created_at),timings,cab_number,source,destination,id from bookings 
-                      where date(created_at) <= date('now','localtime') and 
-                      timings <= time('now','localtime') and 
-                      cancelled = 'no' and emp_id = {}
-                  """.format(self.employee_id)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchall()
+            result = self.employee_repository.show_past_bookings(self.employee_id)
+
             if result:
                 for i in result:
                     print("Booking Id : {}".format(i[5]))
@@ -109,15 +97,8 @@ class Employee:
         :return:
         """
         try:
-            sql = """ select date(created_at),timings,cab_number,source,destination,id from bookings 
-                      where date(created_at) >= date('now','localtime') and 
-                      timings >= time('now','localtime') and 
-                      cancelled = 'no' and emp_id = {}
-                  """.format(self.employee_id)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchall()
+            result = self.employee_repository.show_upcoming_bookings(self.employee_id)
+
             if result:
                 for i in result:
                     print("Booking Id : {}".format(i[5]))
@@ -142,11 +123,8 @@ class Employee:
         :return:
         """
         try:
-            sql = "select * from Routes"
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchall()
+            result = self.employee_repository.show_all_routes()
+
             if result:
                 print("\nAvailable Routes: \n")
                 for i in result:
@@ -166,15 +144,8 @@ class Employee:
         """
         check availability of cabs.
         """
+        records = self.employee_repository.check_availability(route_id, source, destination, timings)
 
-        sql = '''select cab_number,timings,seats_available,stop_name,stop_stage from cab_routes 
-                 where stop_name = "{}" and  route_id = "{}" and seats_available !=0 and timings > "{}" and timings > time('now','localtime') 
-                 and stop_stage < (select stop_stage from cab_routes where stop_name = "{}" and route_id = "{}")        
-        '''.format(source, route_id, timings, destination, route_id)
-        with self.conn:
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            records = cur.fetchall()
         print(records)
         if records:
             print("All Available Cabs after {}: \n".format(timings))
@@ -202,14 +173,8 @@ class Employee:
 
                 cab_num = input("Enter the vehicle number of the cab you want to book: ")
                 time = input("Enter pickup time as per cab timings in HH:SS format: ")
+                self.employee_repository.book_cab(self.employee_id, route_id, cab_num, source, destination, time)
 
-                sql = """INSERT INTO Bookings (emp_id,route_id,cab_number,source,destination,timings)
-                         VALUES ({},'{}','{}','{}','{}','{}')
-                      """.format(self.employee_id, route_id, cab_num, source, destination, time)
-                with self.conn:
-                    cur = self.conn.cursor()
-                    cur.execute(sql)
-                    self.conn.commit()
                 print("Cab booked successfully! Cab Number: {}".format(cab_num))
                 self.decrement_seats(cab_num, route_id, source, destination, time)
                 return True
@@ -227,25 +192,7 @@ class Employee:
         :return:
         """
         try:
-            sql = '''
-            Update cab_routes Set seats_available = seats_available - 1 
-            where cab_number = "{}" and route_id = "{}" and timings = "{}" and
-            stop_stage between 
-            (
-            select stop_stage from cab_routes where cab_number = "{}" and stop_name = "{}" 
-            and  route_id = "{}" and timings = "{}" 
-            ) 
-            and 
-            (
-            select stop_stage from cab_routes where cab_number = "{}" and stop_name = "{}" 
-            and  route_id = "{}" and timings = "{}" 
-            )
-            '''.format(cab_num, route_id, time, cab_num, source, route_id, time, cab_num, destination, route_id, time)
-
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                self.conn.commit()
+            self.employee_repository.decrement_seats(cab_num, route_id, source, destination, time)
             return True
 
         except Exception as e:
@@ -258,25 +205,8 @@ class Employee:
         :return:
         """
         try:
-            sql = '''
-            Update cab_routes Set seats_available = seats_available + 1 
-            where cab_number = "{}" and route_id = "{}" and timings = "{}" and
-            stop_stage between 
-            (
-            select stop_stage from cab_routes where cab_number = "{}" and stop_name = "{}" 
-            and  route_id = "{}" and timings = "{}" 
-            ) 
-            and 
-            (
-            select stop_stage from cab_routes where cab_number = "{}" and stop_name = "{}" 
-            and  route_id = "{}" and timings = "{}" 
-            )
-            '''.format(cab_num, route_id, time, cab_num, source, route_id, time, cab_num, destination, route_id, time)
+            self.employee_repository.increment_seats(cab_num, route_id, source, destination, time)
 
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                self.conn.commit()
             return True
 
         except Exception as e:
@@ -298,11 +228,8 @@ class Employee:
                     difference = datetime.combine(booking_date, pickup_time) - datetime.combine(date.today(),
                                                                                                 datetime.now().time())
                     if (difference.total_seconds() / 60) > 30:
-                        sql = '''Update Bookings set cancelled = "yes" where id = {}'''.format(booking_id)
-                        with self.conn:
-                            cur = self.conn.cursor()
-                            cur.execute(sql)
-                            self.conn.commit()
+                        self.employee_repository.cancel_booking(booking_id)
+
                         print("Booking cancelled successfully.")
                         self.increment_seats(record[2], record[3], record[4], record[5], record[1])
                         return True
@@ -326,12 +253,7 @@ class Employee:
         :return:
         """
         try:
-            sql = """ select date(created_at),timings,cab_number,route_id,source,destination from bookings where id = {}
-                  """.format(booking_id)
-            with self.conn:
-                cur = self.conn.cursor()
-                cur.execute(sql)
-                result = cur.fetchone()
+            result = self.employee_repository.get_booking_by_id(booking_id)
             if result:
                 return result
 

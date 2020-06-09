@@ -1,6 +1,7 @@
 from datetime import datetime
 import re
 
+
 def validate_date(date_text):
     try:
         datetime.strptime(date_text, '%Y-%m-%d')
@@ -8,6 +9,7 @@ def validate_date(date_text):
     except ValueError:
         print("\tInvalid date. Please try again. ")
         return False
+
 
 def validate_email(email):
     """

@@ -69,7 +69,7 @@ class TestAdminService:
         inputs.side_effect = ['1', '2', '3', '4', '6', '5']
         test_class = AdminService.Admin()
 
-        test_class.admin_employee_mgmnt()
+        test_class.admin_employee_management()
 
         mock_create_employee.assert_called_once_with()
         mock_show_allemployees.assert_called_once_with()
@@ -86,7 +86,7 @@ class TestAdminService:
         inputs.side_effect = ['1', '2', '3', '4', '6', '5']
         test_class = AdminService.Admin()
 
-        test_class.admin_cab_mgmnt()
+        test_class.admin_cab_management()
 
         mock_create_cab.assert_called_once_with()
         mock_update_cab.assert_called_once_with()
@@ -295,7 +295,7 @@ class TestAdminService:
 
         test_class = AdminService.Admin()
 
-        result = test_class.show_allemployees()
+        result = test_class.show_all_employees()
 
         assert result is True
 
@@ -304,7 +304,7 @@ class TestAdminService:
         mock_conn.return_value.cursor.return_value.fetchall.return_value = []
         test_class = AdminService.Admin()
 
-        result = test_class.show_allemployees()
+        result = test_class.show_all_employees()
 
         assert result is False
 
