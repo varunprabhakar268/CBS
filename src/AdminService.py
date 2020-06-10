@@ -2,6 +2,7 @@ from getpass import getpass
 from src import InputValidations
 from src.AdminRepository import AdminRepository
 from src.InputValidations import validate_date
+from src.Models import EmployeeModel, CabModel, RouteModel, CabRouteModel
 
 
 class Admin:
@@ -187,7 +188,8 @@ class Admin:
             email = input("Enter email: ")
             if not InputValidations.validate_email(email):
                 return False
-            self.admin_repository.create_employee(name, email)
+            employee = EmployeeModel(name=name, email=email)
+            self.admin_repository.create_employee(employee)
             print("Employee created successfully!")
             return True
         except Exception as e:
@@ -281,9 +283,10 @@ class Admin:
         :return:
         """
         try:
-            cab_num = input("Enter Cab Number: ")
+            cab_number = input("Enter Cab Number: ")
             capacity = int(input("Enter seating capacity: "))
-            self.admin_repository.create_cab(cab_num, capacity)
+            cab = CabModel(cab_number=cab_number, capacity=capacity)
+            self.admin_repository.create_cab(cab)
             print("Cab added successfully!")
             return True
         except Exception as e:
@@ -297,6 +300,7 @@ class Admin:
         """
         try:
             route = input("Enter Route/Route Description: ")
+            route = RouteModel(route=route)
             self.admin_repository.create_route(route)
             print("Route added successfully!")
             return True
@@ -445,7 +449,8 @@ class Admin:
             for i in range(num):
                 stop_name = input("Enter stop name: ")
                 stop_stage = int(input("Enter stop stage (ex: In the route koramangala-hsr-btm, stage of btm is 2): "))
-                self.admin_repository.create_cab_route(cab_num, route_id, stop_name, stop_stage, timings)
+                cab_route = CabRouteModel(cab_number=cab_num,route_id=route_id,stop_name=stop_name,stop_stage=stop_stage,timings=timings)
+                self.admin_repository.create_cab_route(cab_route)
                 print("stop added successfully!\n")
             print("Route added successfully!")
             return True

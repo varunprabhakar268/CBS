@@ -12,8 +12,8 @@ class AdminRepository:
             cur.execute(sql)
             return cur.fetchone()
 
-    def create_employee(self, name, email):
-        sql = "INSERT INTO Employees (name,email) VALUES ('{}','{}')".format(name, email)
+    def create_employee(self, employee):
+        sql = "INSERT INTO Employees (name,email) VALUES ('{}','{}')".format(employee.name, employee.email)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
@@ -31,7 +31,6 @@ class AdminRepository:
                   email = '{}'                    
                   WHERE id = {}
               '''.format(name, email, employee_id)
-
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
@@ -50,11 +49,10 @@ class AdminRepository:
             cur.execute(sql)
             return cur.fetchall()
 
-    def create_cab(self,cab_num, capacity):
+    def create_cab(self,cab):
         sql = """INSERT INTO Cabs (cab_number,capacity)
                  VALUES ('{}',{})
-              """.format(cab_num, capacity)
-
+              """.format(cab.cab_number, cab.capacity)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
@@ -63,8 +61,7 @@ class AdminRepository:
         sql = """
                 INSERT INTO Routes (route)
                 VALUES ('{}')
-              """.format(route)
-
+              """.format(route.route)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
@@ -120,11 +117,10 @@ class AdminRepository:
             cur.execute(sql)
             return cur.fetchall()
 
-    def create_cab_route(self,cab_num, route_id, stop_name, stop_stage, timings):
+    def create_cab_route(self,cab_route):
         sql = """Insert into cab_routes(cab_number,route_id,stop_name,stop_stage,timings)
                  Values('{}','{}','{}',{},'{}')
-              """.format(cab_num,route_id,stop_name,stop_stage,timings)
-
+              """.format(cab_route.cab_number,cab_route.route_id,cab_route.stop_name,cab_route.stop_stage,cab_route.timings)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)

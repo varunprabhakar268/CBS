@@ -57,10 +57,10 @@ class EmployeeRepository:
             cur.execute(sql)
             return cur.fetchall()
 
-    def book_cab(self, employee_id, route_id, cab_num, source, destination, time):
+    def book_cab(self, booking):
         sql = """INSERT INTO Bookings (emp_id,route_id,cab_number,source,destination,timings)
                                  VALUES ({},'{}','{}','{}','{}','{}')
-                              """.format(employee_id, route_id, cab_num, source, destination, time)
+                              """.format(booking.emp_id, booking.route_id, booking.cab_number, booking.source, booking.destination, booking.timings)
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)

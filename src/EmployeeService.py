@@ -2,6 +2,7 @@ from getpass import getpass
 from datetime import datetime, date
 
 from src.EmployeeRepository import EmployeeRepository
+from src.Models import BookingsModel
 
 
 class Employee:
@@ -162,7 +163,8 @@ class Employee:
             if self.check_availability(route_id, source, destination, timings):
                 cab_num = input("Enter the vehicle number of the cab you want to book: ")
                 time = input("Enter pickup time as per cab timings in HH:SS format: ")
-                self.employee_repository.book_cab(self.employee_id, route_id, cab_num, source, destination, time)
+                booking = BookingsModel(emp_id=self.employee_id,route_id=route_id,cab_number=cab_num,source=source,destination=destination,timings=time)
+                self.employee_repository.book_cab(booking)
                 print("Cab booked successfully! Cab Number: {}".format(cab_num))
                 self.decrement_seats(cab_num, route_id, source, destination, time)
                 return True
