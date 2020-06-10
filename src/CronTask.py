@@ -1,3 +1,4 @@
+import os
 import smtplib
 import sqlite3
 import ssl
@@ -38,6 +39,7 @@ def create_booking_destination_report():
 
 
 def send_email():
+    dir_path = "../report"
     files = ['MonthlyBookings.pdf', 'DailyBookings.pdf', 'Destination.pdf']
     subject = "Cab Booking Details"
     body = "Please find the Cab Bookings Report attached with this email."
@@ -50,9 +52,10 @@ def send_email():
     message["Subject"] = subject
     message["Bcc"] = receiver_email
     message.attach(MIMEText(body, "plain"))
-    for file_path in files:
+    for file in files:
+        file_path = os.path.join(dir_path, file)
         attachment = MIMEApplication(open(file_path, "rb").read(), _subtype="txt")
-        attachment.add_header('Content-Disposition', 'attachment', filename=file_path)
+        attachment.add_header('Content-Disposition', 'attachment', filename=file)
         message.attach(attachment)
     text = message.as_string()
     context = ssl.create_default_context()
