@@ -9,6 +9,7 @@ def create_tables(conn):
                 password VARCHAR(20) NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
              );''')
+    conn.commit()
 
     # cursor.execute("INSERT INTO Admin(name,email,password) VALUES ('captain','cap@gmail.com','password');")
     # conn.commit()
@@ -22,6 +23,7 @@ def create_tables(conn):
                 password VARCHAR(20),
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
              );''')
+    conn.commit()
 
     cursor.execute('''
              CREATE TABLE IF NOT EXISTS Cabs
@@ -31,6 +33,7 @@ def create_tables(conn):
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
              );
              ''')
+    conn.commit()
 
     cursor.execute('''
              CREATE TABLE IF NOT EXISTS cab_routes
@@ -45,6 +48,7 @@ def create_tables(conn):
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (cab_number) REFERENCES Cabs(cab_number) ON DELETE CASCADE
              );''')
+    conn.commit()
 
     cursor.execute('''
              CREATE TRIGGER IF NOT EXISTS 'cab_routes_seats_available_val'
@@ -57,6 +61,7 @@ def create_tables(conn):
              WHERE
              cab_number = new.cab_number;
              END;''')
+    conn.commit()
 
     cursor.execute('''
              CREATE TABLE IF NOT EXISTS Bookings
@@ -74,6 +79,7 @@ def create_tables(conn):
                 FOREIGN KEY (emp_id) REFERENCES Employees(id) ON DELETE CASCADE,
                 FOREIGN KEY (cab_number) REFERENCES Cabs(cab_number)ON DELETE CASCADE
              );''')
+    conn.commit()
 
     cursor.execute('''
              CREATE TABLE IF NOT EXISTS Routes
