@@ -5,7 +5,7 @@ Introduction
 ----
 Cab Booking System is a Simple Console Application where a user can book a cab between different client locations. Multiple employees can book the same cab to travel to client locations or in between stops. Each cab will have a dedicated route and will travel to and fro at different timings.  
 To know more about Cab Booking System, click on the link below.
-https://docs.google.com/document/d/19TN5iCXihnF_19BxCLd2nhPaUsKxMlsDDbV0IbylRRo/edit#
+https://docs.google.com/document/d/1tBe4ubowxoXKOu4Fp6CDVne6sl5HAbye6qfQBX7VyeE/edit?usp=sharing
 
 Prerequisites
 ----
