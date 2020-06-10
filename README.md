@@ -13,7 +13,8 @@ Python 3.6+
 
 Steps Involved
 ----
-Clone the repository and run Main.py.
+1. Clone the repository and run Main.py.
+2. To schedule cron job run ScheduleCron.py.
 
 ### Credentials
 
