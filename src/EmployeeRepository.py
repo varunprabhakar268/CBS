@@ -17,6 +17,7 @@ class EmployeeRepository:
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
+            self.conn.commit()
 
     def show_past_bookings(self, employee_id):
         sql = """ select date(created_at),timings,cab_number,source,destination,id from bookings 

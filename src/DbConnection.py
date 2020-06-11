@@ -13,9 +13,6 @@ def create_connection():
     try:
         conn = sqlite3.connect(db_file)
         Schema.create_tables(conn)
-        sql = "PRAGMA foreign_keys = ON"
-        cur = conn.cursor()
-        cur.execute(sql)
         return conn
     except Error as e:
         print(e)

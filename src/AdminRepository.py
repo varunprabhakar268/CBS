@@ -125,7 +125,7 @@ class AdminRepository:
             cur = self.conn.cursor()
             cur.execute(sql)
 
-    def get_route_by_cab_num(self, cab_num):
+    def get_cab_route_by_cab_num(self, cab_num):
         sql = '''SELECT id,cab_number,route_id,stop_name,stop_stage,timings FROM cab_routes 
                  WHERE cab_number = "{}" '''.format(cab_num)
         with self.conn:
@@ -133,7 +133,7 @@ class AdminRepository:
             cur.execute(sql)
             return cur.fetchall()
 
-    def get_all_routes(self):
+    def get_all_cab_routes(self):
         sql = '''SELECT id,cab_number,route_id,stop_name,stop_stage,timings FROM cab_routes'''
         with self.conn:
             cur = self.conn.cursor()

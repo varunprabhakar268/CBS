@@ -1,6 +1,5 @@
 from getpass import getpass
 from datetime import datetime, date
-
 from src.EmployeeRepository import EmployeeRepository
 from src.Models import BookingsModel
 
@@ -163,7 +162,8 @@ class Employee:
             if self.check_availability(route_id, source, destination, timings):
                 cab_num = input("Enter the vehicle number of the cab you want to book: ")
                 time = input("Enter pickup time as per cab timings in HH:SS format: ")
-                booking = BookingsModel(emp_id=self.employee_id,route_id=route_id,cab_number=cab_num,source=source,destination=destination,timings=time)
+                booking = BookingsModel(emp_id=self.employee_id, route_id=route_id, cab_number=cab_num, source=source,
+                                        destination=destination, timings=time)
                 self.employee_repository.book_cab(booking)
                 print("Cab booked successfully! Cab Number: {}".format(cab_num))
                 self.decrement_seats(cab_num, route_id, source, destination, time)
@@ -218,7 +218,8 @@ class Employee:
                         self.increment_seats(booking[2], booking[3], booking[4], booking[5], booking[1])
                         return True
                     else:
-                        print("Booking Cancellation Failed. Cancellations should be done 30 mins prior to the scheduled time.")
+                        print(
+                            "Booking Cancellation Failed. Cancellations should be done 30 mins prior to the scheduled time.")
                         return False
                 else:
                     print("No records found.")

@@ -449,7 +449,8 @@ class Admin:
             for i in range(num):
                 stop_name = input("Enter stop name: ")
                 stop_stage = int(input("Enter stop stage (ex: In the route koramangala-hsr-btm, stage of btm is 2): "))
-                cab_route = CabRouteModel(cab_number=cab_num,route_id=route_id,stop_name=stop_name,stop_stage=stop_stage,timings=timings)
+                cab_route = CabRouteModel(cab_number=cab_num, route_id=route_id, stop_name=stop_name,
+                                          stop_stage=stop_stage, timings=timings)
                 self.admin_repository.create_cab_route(cab_route)
                 print("stop added successfully!\n")
             print("Route added successfully!")
@@ -462,54 +463,66 @@ class Admin:
         """
         Get route details of a particular cab.
         """
-        cab_routes = self.admin_repository.get_route_by_cab_num(cab_num)
-        if cab_routes:
-            for cab_route in cab_routes:
-                print("\nId : {}".format(cab_route[0]))
-                print("Cab Number : {}".format(cab_route[1]))
-                print("Route Id : {}".format(cab_route[2]))
-                print("Stop Name : {}".format(cab_route[3]))
-                print("Stop stage : {}".format(cab_route[4]))
-                print("Timings : {}".format(cab_route[5]))
-                print("----------------------------")
-            return True
-        else:
-            print("Invalid Input")
+        try:
+            cab_routes = self.admin_repository.get_cab_route_by_cab_num(cab_num)
+            if cab_routes:
+                for cab_route in cab_routes:
+                    print("\nId : {}".format(cab_route[0]))
+                    print("Cab Number : {}".format(cab_route[1]))
+                    print("Route Id : {}".format(cab_route[2]))
+                    print("Stop Name : {}".format(cab_route[3]))
+                    print("Stop stage : {}".format(cab_route[4]))
+                    print("Timings : {}".format(cab_route[5]))
+                    print("----------------------------")
+                return True
+            else:
+                print("Invalid Input")
+                return False
+        except Exception as e:
+            print("Some Error occurred. Please try again.")
             return False
 
     def get_all_cab_routes(self):
         """
         Get route details of cabs.
         """
-        cab_routes = self.admin_repository.get_all_routes()
-        if cab_routes:
-            for cab_route in cab_routes:
-                print("\nId : {}".format(cab_route[0]))
-                print("Cab Number : {}".format(cab_route[1]))
-                print("Route Id : {}".format(cab_route[2]))
-                print("Stop Name : {}".format(cab_route[3]))
-                print("Stop stage : {}".format(cab_route[4]))
-                print("Timings : {}".format(cab_route[5]))
-                print("----------------------------")
-            return True
-        else:
-            print("Data Empty/Not Found.")
+        try:
+            cab_routes = self.admin_repository.get_all_cab_routes()
+            if cab_routes:
+                for cab_route in cab_routes:
+                    print("\nId : {}".format(cab_route[0]))
+                    print("Cab Number : {}".format(cab_route[1]))
+                    print("Route Id : {}".format(cab_route[2]))
+                    print("Stop Name : {}".format(cab_route[3]))
+                    print("Stop stage : {}".format(cab_route[4]))
+                    print("Timings : {}".format(cab_route[5]))
+                    print("----------------------------")
+                return True
+            else:
+                print("Data Empty/Not Found.")
+                return False
+        except Exception as e:
+            print("Some error occurred. Please try again.")
             return False
 
     def get_cab_route_by_id(self, id):
         """
         Get stop details of a particular cab.
         """
-        cab_route = self.admin_repository.get_cab_route_by_id(id)
-        if cab_route:
-            print("Cab Number : {}".format(cab_route[1]))
-            print("Route Id : {}".format(cab_route[2]))
-            print("Stop Name : {}".format(cab_route[3]))
-            print("Stop stage : {}".format(cab_route[4]))
-            print("Timings : {}".format(cab_route[5]))
-            return cab_route
-        else:
-            print("Invalid Input")
+        try:
+            cab_route = self.admin_repository.get_cab_route_by_id(id)
+            if cab_route:
+                print("Cab Number : {}".format(cab_route[1]))
+                print("Route Id : {}".format(cab_route[2]))
+                print("Stop Name : {}".format(cab_route[3]))
+                print("Stop stage : {}".format(cab_route[4]))
+                print("Timings : {}".format(cab_route[5]))
+                return cab_route
+            else:
+                print("Invalid Input")
+                return False
+        except Exception as e:
+            print("Some Error occurred. Please try again.")
             return False
 
     def update_cab_route(self):
@@ -562,6 +575,7 @@ class Admin:
                 return True
             else:
                 print("Invalid input.")
+                return False
 
         except Exception as e:
             print("Some Error occurred.Please try again")
@@ -651,5 +665,5 @@ class Admin:
                 print("No records found.")
                 return False
         except Exception as e:
-            print("Some Error occurred.")
+            print("Some Error occurred. Please try again.")
             return False
