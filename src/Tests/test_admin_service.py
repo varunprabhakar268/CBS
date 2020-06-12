@@ -168,7 +168,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.create_employee')
-    def test_create_employee_unknown_error(self, mock_repository):
+    def test_create_employee_error(self, mock_repository):
         test_class = AdminService.Admin()
         mock_repository.side_effect = sqlite3.Error
 
@@ -240,7 +240,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.update_employee')
-    def test_update_employee_unknown_error(self, mock_repository):
+    def test_update_employee_error(self, mock_repository):
         test_class = AdminService.Admin()
         mock_repository.side_effect = sqlite3.Error
 
@@ -280,7 +280,7 @@ class TestAdminService:
     @mock.patch('src.AdminService.Admin.show_all_employees')
     @mock.patch('src.AdminRepository.AdminRepository.delete_employee')
     @mock.patch('src.AdminService.input')
-    def test_delete_employee_unknown_error(self, inputs, mock_repository, mock_show_all_employees):
+    def test_delete_employee_error(self, inputs, mock_repository, mock_show_all_employees):
         inputs.side_effect = ['a']
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -309,7 +309,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.show_all_employees')
-    def test_show_all_employees_unknown_error(self, mock_repository):
+    def test_show_all_employees_error(self, mock_repository):
         mock_repository.return_value = [(1, 'test', 'email@gmail.com')]
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -331,7 +331,7 @@ class TestAdminService:
 
     @mock.patch('src.AdminRepository.AdminRepository.create_cab')
     @mock.patch('src.AdminService.input')
-    def test_create_cab_unknown_error(self, inputs, mock_repository):
+    def test_create_cab_error(self, inputs, mock_repository):
         inputs.side_effect = ['cab123', 'b']
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -351,7 +351,7 @@ class TestAdminService:
         assert result is True
 
     @mock.patch('src.AdminRepository.AdminRepository.create_route')
-    def test_create_route_unknown_error(self, mock_repository):
+    def test_create_route_error(self, mock_repository):
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -377,7 +377,7 @@ class TestAdminService:
 
         assert result is False
 
-    def test_get_cab_by_id_unknown_error(self):
+    def test_get_cab_by_id_error(self):
         test_class = AdminService.Admin()
 
         result = test_class.get_cab_by_id('test')
@@ -427,7 +427,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.update_cab')
-    def test_update_cab_unknown_error(self, mock_repository):
+    def test_update_cab_error(self, mock_repository):
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -464,7 +464,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.delete_cab')
-    def test_delete_cab_unknown_error(self, mock_repository):
+    def test_delete_cab_error(self, mock_repository):
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -501,7 +501,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.delete_route')
-    def test_delete_route_unknown_error(self, mock_repository):
+    def test_delete_route_error(self, mock_repository):
         test_class = AdminService.Admin()
         mock_repository.side_effect = sqlite3.Error
 
@@ -528,7 +528,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.show_all_cabs')
-    def test_show_all_cabs_unknown_error(self, mock_repository):
+    def test_show_all_cabs_error(self, mock_repository):
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -555,7 +555,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.show_all_routes')
-    def test_show_all_routes_unknown_error(self, mock_repository):
+    def test_show_all_routes_error(self, mock_repository):
         mock_repository.return_value = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -588,7 +588,7 @@ class TestAdminService:
 
     @mock.patch('src.AdminRepository.AdminRepository.show_emp_bookings')
     @mock.patch('src.AdminService.input')
-    def test_show_emp_bookings_unknown_error(self, inputs, mock_repository):
+    def test_show_emp_bookings_error(self, inputs, mock_repository):
         inputs.side_effect = ['b']
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -630,7 +630,7 @@ class TestAdminService:
 
     @mock.patch('src.AdminRepository.AdminRepository.show_total_bookings_day')
     @mock.patch('src.AdminService.input')
-    def test_show_total_bookings_day_unknown_error(self, inputs, mock_repository):
+    def test_show_total_bookings_day_error(self, inputs, mock_repository):
         inputs.side_effect = ['2020-01-01']
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -663,7 +663,7 @@ class TestAdminService:
 
     @mock.patch('src.AdminRepository.AdminRepository.show_total_bookings_week')
     @mock.patch('src.AdminService.input')
-    def test_show_total_bookings_week_unknown_error(self, inputs, mock_repository):
+    def test_show_total_bookings_week_error(self, inputs, mock_repository):
         inputs.side_effect = ['b']
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -696,7 +696,7 @@ class TestAdminService:
 
     @mock.patch('src.AdminRepository.AdminRepository.show_total_bookings_month')
     @mock.patch('src.AdminService.input')
-    def test_show_total_bookings_month_unknown_error(self, inputs, mock_repository):
+    def test_show_total_bookings_month_error(self, inputs, mock_repository):
         inputs.side_effect = ['b']
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -744,7 +744,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.get_cab_route_by_cab_num')
-    def test_get_cab_route_by_cab_num_unknown_error(self, mock_repository):
+    def test_get_cab_route_by_cab_num_error(self, mock_repository):
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -771,7 +771,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.get_cab_route_by_id')
-    def test_get_cab_route_by_id_unknown_error(self, mock_repository):
+    def test_get_cab_route_by_id_error(self, mock_repository):
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -834,7 +834,7 @@ class TestAdminService:
 
     @mock.patch('src.AdminService.Admin.get_cab_route_by_cab_num')
     @mock.patch('src.AdminRepository.AdminRepository.update_cab_route')
-    def test_update_cab_route_unknown_error(self, mock_repository, mock_get_cab_route_by_cab_num):
+    def test_update_cab_route_error(self, mock_repository, mock_get_cab_route_by_cab_num):
         mock_get_cab_route_by_cab_num.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
@@ -867,7 +867,7 @@ class TestAdminService:
 
     @mock.patch('src.AdminService.Admin.get_cab_route_by_cab_num')
     @mock.patch('src.AdminService.input')
-    def test_delete_cab_route_unknown_error(self, inputs, mock_get_cab_route_by_cab_num):
+    def test_delete_cab_route_error(self, inputs, mock_get_cab_route_by_cab_num):
         inputs.side_effect = ['test123']
         mock_get_cab_route_by_cab_num.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
@@ -895,7 +895,7 @@ class TestAdminService:
         assert result is False
 
     @mock.patch('src.AdminRepository.AdminRepository.get_all_cab_routes')
-    def test_get_all_cab_routes_unknown_error(self, mock_repository):
+    def test_get_all_cab_routes_error(self, mock_repository):
         mock_repository.side_effect = sqlite3.Error
         test_class = AdminService.Admin()
 
