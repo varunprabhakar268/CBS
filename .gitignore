@@ -6,3 +6,4 @@ src/.idea
 .pytest_cache
 .idea
 .coverage
+src/Tests/__pycache__
