@@ -1,6 +1,7 @@
 from src import EmployeeService, AdminService
 
-if __name__ == '__main__':
+
+def login_menu():
     option = ''
     while option != '3':
         print("MAIN MENU")
@@ -20,3 +21,7 @@ if __name__ == '__main__':
             print("Thank You.")
         else:
             print("Invalid choice.")
+
+
+if __name__ == '__main__':
+    login_menu()

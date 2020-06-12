@@ -65,7 +65,6 @@ class EmployeeRepository:
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(sql)
-            self.conn.commit()
 
     def decrement_seats(self, cab_num, route_id, source, destination, time):
         sql = '''

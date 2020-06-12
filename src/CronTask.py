@@ -10,32 +10,63 @@ import pandas as pd
 conn = sqlite3.connect('/home/nineleaps/PythonAssignments/CBS/cbs_db.sqlite')
 
 
-def create_monthly_bookings_report():
+def get_monthly_bookings():
     sql = """select strftime('%m',date(created_at)) as 'month',count(*) as 'total_bookings' from Bookings 
                  where cancelled = 'no' 
                  group by strftime('%m',date(created_at))"""
     monthly_booking_df = pd.read_sql_query(sql, conn)
+    return monthly_booking_df
+
+
+def plot_monthly_bookings_report(monthly_booking_df):
     plot = monthly_booking_df.plot.bar(x='month', y='total_bookings', rot=0)
     fig = plot.get_figure()
+    return fig
+
+
+def create_monthly_bookings_report():
+    monthly_booking_df = get_monthly_bookings()
+    fig = plot_monthly_bookings_report(monthly_booking_df)
     fig.savefig("../report/MonthlyBookings.pdf")
+    return True
+
+
+def get_daily_bookings():
+    sql = "select date(created_at) as 'date',count(*) as 'total_bookings' from bookings where cancelled = 'no' group by date(created_at) limit 31"
+    daily_booking_df = pd.read_sql_query(sql, conn)
+    return daily_booking_df
+
+
+def plot_daily_bookings_report(daily_booking_df):
+    plot = daily_booking_df.plot.bar(x='date', y='total_bookings', rot=0)
+    fig = plot.get_figure()
+    return fig
 
 
 def create_daily_bookings_report():
-    daily_booking_df = pd.read_sql_query(
-        "select date(created_at) as 'date',count(*) as 'total_bookings' from bookings where cancelled = 'no' group by date(created_at) limit 31",
-        conn)
-    plot = daily_booking_df.plot.bar(x='date', y='total_bookings', rot=0)
-    fig = plot.get_figure()
+    daily_booking_df = get_daily_bookings()
+    fig = plot_daily_bookings_report(daily_booking_df)
     fig.savefig("../report/DailyBookings.pdf")
+    return True
+
+
+def get_booking_destination():
+    sql = "select destination ,count(*) as 'total_bookings' from bookings where cancelled = 'no' group by destination"
+    destination_df = pd.read_sql_query(sql, conn)
+    return destination_df
+
+
+def plot_booking_destination_report(destination_df):
+    plot = destination_df.plot.bar(x='destination', y='total_bookings', rot=0)
+    fig = plot.get_figure()
+    return fig
 
 
 def create_booking_destination_report():
-    destination_df = pd.read_sql_query(
-        "select destination ,count(*) as 'total_bookings' from bookings where cancelled = 'no' group by destination",
-        conn)
-    plot = destination_df.plot.bar(x='destination', y='total_bookings', rot=0)
-    fig = plot.get_figure()
+    destination_df = get_booking_destination()
+    fig = plot_booking_destination_report(destination_df)
     fig.savefig("../report/Destination.pdf")
+    return True
 
 
 def send_email():
@@ -64,7 +95,8 @@ def send_email():
         server.sendmail(sender_email, receiver_email, text)
 
 
-create_monthly_bookings_report()
-create_daily_bookings_report()
-create_booking_destination_report()
-send_email()
+if __name__ == '__main__':
+    create_monthly_bookings_report()
+    create_daily_bookings_report()
+    create_booking_destination_report()
+    send_email()

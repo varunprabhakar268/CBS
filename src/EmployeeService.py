@@ -1,3 +1,4 @@
+import sqlite3
 from getpass import getpass
 from datetime import datetime, date
 from src.EmployeeRepository import EmployeeRepository
@@ -170,8 +171,9 @@ class Employee:
                 return True
             else:
                 return False
-        except Exception as e:
+        except sqlite3.OperationalError as e:
             print("Some Error occurred.")
+            print(e)
             return False
 
     def decrement_seats(self, cab_num, route_id, source, destination, time):
@@ -181,7 +183,6 @@ class Employee:
         """
         try:
             self.employee_repository.decrement_seats(cab_num, route_id, source, destination, time)
-            return True
         except Exception as e:
             print("Some Error occurred.")
             return False
@@ -193,7 +194,6 @@ class Employee:
         """
         try:
             self.employee_repository.increment_seats(cab_num, route_id, source, destination, time)
-            return True
         except Exception as e:
             print("Some Error occurred.")
             return False

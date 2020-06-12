@@ -83,7 +83,6 @@ class TestEmployeeRepository:
         test_class.book_cab(booking)
 
         mock_conn.return_value.cursor.return_value.execute.assert_called_once_with(sql)
-        mock_conn.return_value.commit.assert_called_once_with()
 
     @mock.patch('src.DbConnection.create_connection')
     def test_decrement_seats(self, mock_conn):

@@ -16,3 +16,4 @@ def create_connection():
         return conn
     except Error as e:
         print(e)
+        return False

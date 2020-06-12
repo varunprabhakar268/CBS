@@ -76,7 +76,9 @@ class TestEmployeeService:
 
         assert result is False
 
-    def test_show_past_bookings_unknown_error(self):
+    @mock.patch('src.EmployeeRepository.EmployeeRepository.show_past_bookings')
+    def test_show_past_bookings_error(self, mock_repository):
+        mock_repository.side_effect = sqlite3.OperationalError(mock.Mock(), 'db lock')
         test_class = EmployeeService.Employee()
 
         result = test_class.show_past_bookings()
@@ -102,7 +104,9 @@ class TestEmployeeService:
 
         assert result is False
 
-    def test_show_upcoming_bookings_unknown_error(self):
+    @mock.patch('src.EmployeeRepository.EmployeeRepository.show_upcoming_bookings')
+    def test_show_upcoming_bookings_error(self, mock_repository):
+        mock_repository.side_effect = sqlite3.OperationalError(mock.Mock(), 'db lock')
         test_class = EmployeeService.Employee()
 
         result = test_class.show_upcoming_bookings()
@@ -129,7 +133,7 @@ class TestEmployeeService:
 
     @mock.patch('src.EmployeeRepository.EmployeeRepository.show_all_routes')
     def test_show_all_routes_error(self, mock_repository):
-        mock_repository.return_value = sqlite3.Error
+        mock_repository.side_effect = sqlite3.OperationalError(mock.Mock(), 'db lock')
         test_class = EmployeeService.Employee()
 
         result = test_class.show_all_routes()
@@ -154,7 +158,7 @@ class TestEmployeeService:
 
         assert result is False
 
-    def test_check_availability_unknown_error(self):
+    def test_check_availability_error(self):
         test_class = EmployeeService.Employee()
 
         result = test_class.check_availability(1, 'k', 'd', '10:00')
@@ -180,7 +184,9 @@ class TestEmployeeService:
 
         assert result is False
 
-    def test_get_booking_by_id_unknown_error(self):
+    @mock.patch('src.EmployeeRepository.EmployeeRepository.get_booking_by_id')
+    def test_get_booking_by_id_error(self,mock_repository):
+        mock_repository.side_effect = sqlite3.OperationalError(mock.Mock(), 'db lock')
         test_class = EmployeeService.Employee()
 
         result = test_class.get_booking_by_id('a')
@@ -189,14 +195,21 @@ class TestEmployeeService:
 
     @mock.patch('src.EmployeeRepository.EmployeeRepository.decrement_seats')
     def test_decrement_seats(self, mock_repository):
+        cab_num = 'cab123'
+        route_id = '1'
+        source = 's'
+        destination = 'd'
+        time = '12:00'
         test_class = EmployeeService.Employee()
 
-        result = test_class.decrement_seats('cab123', 1, 's', 'd', '12:00')
+        test_class.decrement_seats(cab_num, route_id, source, destination, time)
 
-        assert result is True
+        mock_repository.assert_called_once_with(cab_num, route_id, source, destination, time)
 
-    def test_decrement_seats_error(self):
+    @mock.patch('src.EmployeeRepository.EmployeeRepository.decrement_seats')
+    def test_decrement_seats_error(self, mock_repository):
         test_class = EmployeeService.Employee()
+        mock_repository.side_effect = sqlite3.OperationalError(mock.Mock(), 'db lock')
 
         result = test_class.decrement_seats('cab123', 1, 's', 'd', '12:00')
 
@@ -204,15 +217,21 @@ class TestEmployeeService:
 
     @mock.patch('src.EmployeeRepository.EmployeeRepository.increment_seats')
     def test_increment_seats(self, mock_repository):
+        cab_num = 'cab123'
+        route_id = '1'
+        source = 's'
+        destination = 'd'
+        time = '12:00'
         test_class = EmployeeService.Employee()
 
-        result = test_class.increment_seats('cab123', 1, 's', 'd', '12:00')
+        test_class.increment_seats(cab_num, route_id, source, destination, time)
 
-        assert result is True
+        mock_repository.assert_called_once_with(cab_num, route_id, source, destination, time)
 
-    def test_increment_seats_error(self):
+    @mock.patch('src.EmployeeService.EmployeeRepository.increment_seats')
+    def test_increment_seats_error(self, mock_repository):
         test_class = EmployeeService.Employee()
-
+        mock_repository.side_effect = sqlite3.OperationalError(mock.Mock(), 'db lock')
         result = test_class.increment_seats('cab123', 1, 's', 'd', '12:00')
 
         assert result is False
@@ -243,7 +262,9 @@ class TestEmployeeService:
 
         assert result is False
 
-    def test_book_cab_unknown_error(self):
+    @mock.patch('src.EmployeeService.Employee.show_all_routes')
+    def test_book_cab_error(self, mock_repository):
+        mock_repository.side_effect = sqlite3.OperationalError(mock.Mock(), 'db lock')
         test_class = EmployeeService.Employee()
 
         result = test_class.book_cab()
@@ -281,7 +302,8 @@ class TestEmployeeService:
     @mock.patch('src.EmployeeService.Employee.get_booking_by_id')
     @mock.patch('src.EmployeeRepository.EmployeeRepository.cancel_booking')
     @mock.patch('src.EmployeeService.input')
-    def test_cancel_booking(self, inputs, mock_repository, mock_get_booking_by_id, mock_show_upcoming_bookings,mock_increment_seats):
+    def test_cancel_booking(self, inputs, mock_repository, mock_get_booking_by_id, mock_show_upcoming_bookings,
+                            mock_increment_seats):
         inputs.side_effect = [1]
         mock_show_upcoming_bookings.return_value = True
         mock_get_booking_by_id.return_value = ('2020-01-01', '10:00', 'cab123', 1, 'source', 'destination')
@@ -297,8 +319,9 @@ class TestEmployeeService:
     @mock.patch('src.EmployeeService.Employee.get_booking_by_id')
     @mock.patch('src.EmployeeRepository.EmployeeRepository.cancel_booking')
     @mock.patch('src.EmployeeService.input')
-    def test_cancel_booking_time_constraint_failure(self, inputs, mock_repository, mock_get_booking_by_id, mock_show_upcoming_bookings,
-                            mock_increment_seats):
+    def test_cancel_booking_time_constraint_failure(self, inputs, mock_repository, mock_get_booking_by_id,
+                                                    mock_show_upcoming_bookings,
+                                                    mock_increment_seats):
         inputs.side_effect = [1]
         mock_show_upcoming_bookings.return_value = True
         mock_get_booking_by_id.return_value = ('2020-01-01', '10:00', 'cab123', 1, 'source', 'destination')
@@ -311,7 +334,7 @@ class TestEmployeeService:
     @mock.patch('src.EmployeeService.Employee.show_upcoming_bookings')
     @mock.patch('src.EmployeeRepository.EmployeeRepository.cancel_booking')
     @mock.patch('src.EmployeeService.input')
-    def test_cancel_booking_unknown_error(self, inputs, mock_repository, mock_show_upcoming_bookings):
+    def test_cancel_booking_error(self, inputs, mock_repository, mock_show_upcoming_bookings):
         inputs.return_value = ['a']
         mock_show_upcoming_bookings.return_value = ['something']
         test_class = EmployeeService.Employee()
