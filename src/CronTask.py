@@ -95,8 +95,12 @@ def send_email():
         server.sendmail(sender_email, receiver_email, text)
 
 
-if __name__ == '__main__':
+def cron_task():
     create_monthly_bookings_report()
     create_daily_bookings_report()
     create_booking_destination_report()
     send_email()
+
+
+if __name__ == '__main__': \
+    cron_task()

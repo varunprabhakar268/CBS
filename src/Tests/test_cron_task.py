@@ -101,3 +101,17 @@ class TestCronTask:
         result = CronTask.create_booking_destination_report()
 
         assert result is True
+
+    @mock.patch('src.CronTask.send_email')
+    @mock.patch('src.CronTask.create_booking_destination_report')
+    @mock.patch('src.CronTask.create_daily_bookings_report')
+    @mock.patch('src.CronTask.create_monthly_bookings_report')
+    def test_cron_task(self, mock_create_monthly_bookings_report, mock_create_daily_bookings_report,mock_create_booking_destination_report, mock_send_email):
+
+        CronTask.cron_task()
+
+        mock_create_monthly_bookings_report.assert_called_once_with()
+        mock_create_daily_bookings_report.assert_called_once_with()
+        mock_create_booking_destination_report.assert_called_once_with()
+        mock_send_email.assert_called_once_with()
+

@@ -23,5 +23,5 @@ def login_menu():
             print("Invalid choice.")
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': \
     login_menu()
